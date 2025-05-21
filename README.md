@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://graph.org/file/d874fc40ddf9ead6a0b68.jpg" alt="ShrutiMusicBot Logo" width="300px">
+<img src="https://files.catbox.moe/eehxb4.jpg" alt="ShrutiMusicBot Logo" width="300px">
 </p>
 
 <h1 align="center">🎵 Shruti Music Bot 🎵</h1>
@@ -15,8 +15,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/NoxxOP/ShrutiMusicBot/fork"><img src="https://img.shields.io/github/forks/NoxxOP/ShrutiMusicBot?style=social" alt="GitHub Forks"></a>
-  <a href="https://github.com/NoxxOP/ShrutiMusicBot/stargazers"><img src="https://img.shields.io/github/stars/NoxxOP/ShrutiMusicBot?style=social" alt="GitHub Stars"></a>
+  <a href="https://github.com/NoxxOP/ShrutiMusic/fork"><img src="https://img.shields.io/github/forks/NoxxOP/ShrutiMusicBot?style=social" alt="GitHub Forks"></a>
+  <a href="https://github.com/NoxxOP/ShrutiMusic/stargazers"><img src="https://img.shields.io/github/stars/NoxxOP/ShrutiMusicBot?style=social" alt="GitHub Stars"></a>
 </p>
 
 <p align="center">
