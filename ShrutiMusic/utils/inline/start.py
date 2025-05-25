@@ -3,55 +3,63 @@ from pyrogram.types import InlineKeyboardButton, CallbackQuery
 import time
 import config
 from ShrutiMusic import app  # @WTF_WhyMeeh From TG
+from strings import get_string  # Language function import
+from ShrutiMusic.utils.database import get_lang  # User language get karne ke liye
 
 START_TIME = time.time()
 
-def start_panel():
+async def start_panel(user_id):
+    try:
+        language = await get_lang(user_id)  # User ki language get karo
+        _ = get_string(language)  # Language strings load karo
+    except:
+        _ = get_string("en")  # Default English if error
+    
     buttons = [
         [
             InlineKeyboardButton(
-                text="S_B_1",
+                text=_["S_B_1"],  # YAML file se actual text uthayega
                 url=f"https://t.me/{app.username}?startgroup=true"
             ),
             InlineKeyboardButton(
-                text="S_B_2",
+                text=_["S_B_2"],
                 url=config.SUPPORT_GROUP
             ),
         ],
         [
             InlineKeyboardButton(
-                text="E_X_1",
+                text=_["E_X_1"],
                 url="https://github.com/NoxxOP/ShrutiMusic/fork"
             ),
         ],
     ]
     return buttons
 
-def private_panel(_):  # Added the underscore parameter
+def private_panel(_):  # Yeh language decorator se aata hai
     buttons = [
         [
             InlineKeyboardButton(
-                text="S_B_3",
+                text=_["S_B_3"],  # YAML file se actual text uthayega
                 url=f"https://t.me/{app.username}?startgroup=true",
             )
         ],
         [
             InlineKeyboardButton(
-                text="E_X_1",
+                text=_["E_X_1"],
                 url="https://github.com/NoxxOP/ShrutiMusic/fork"
             ),
             InlineKeyboardButton(
-                text="E_X_2",
+                text=_["E_X_2"],
                 callback_data="show_status"
             ),
         ],
         [
-            InlineKeyboardButton(text="S_B_6", url=config.SUPPORT_CHANNEL),
-            InlineKeyboardButton(text="S_B_5", user_id=config.OWNER_ID),
-            InlineKeyboardButton(text="S_B_2", url=config.SUPPORT_GROUP),
+            InlineKeyboardButton(text=_["S_B_6"], url=config.SUPPORT_CHANNEL),
+            InlineKeyboardButton(text=_["S_B_5"], user_id=config.OWNER_ID),
+            InlineKeyboardButton(text=_["S_B_2"], url=config.SUPPORT_GROUP),
         ],
         [
-            InlineKeyboardButton(text="S_B_4", callback_data="settings_back_helper")
+            InlineKeyboardButton(text=_["S_B_4"], callback_data="settings_back_helper")
         ],
     ]
     return buttons
