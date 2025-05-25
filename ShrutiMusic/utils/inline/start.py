@@ -1,7 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, CallbackQuery
 import time
-
 import config
 from ShrutiMusic import app  # @WTF_WhyMeeh From TG
 
@@ -28,7 +27,7 @@ def start_panel():
     ]
     return buttons
 
-def private_panel():
+def private_panel(_):  # Added the underscore parameter
     buttons = [
         [
             InlineKeyboardButton(
@@ -63,11 +62,11 @@ async def show_status_callback(client: Client, callback_query: CallbackQuery):
     hours, remainder = divmod(uptime_seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     uptime_str = f"{hours}h {minutes}m {seconds}s"
-
+    
     status_message = (
         "Bot Status:\n"
         "Status: Alive ✅\n"
         f"Uptime: {uptime_str}\n"
     )
-
+    
     await callback_query.answer(text=status_message, show_alert=True)
