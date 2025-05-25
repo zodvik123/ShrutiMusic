@@ -19,6 +19,12 @@ def start_panel():
                 url=config.SUPPORT_GROUP
             ),
         ],
+        [
+            InlineKeyboardButton(
+                text="E_X_1",
+                url="https://github.com/NoxxOP/ShrutiMusic/fork"
+            ),
+        ],
     ]
     return buttons
 
@@ -30,7 +36,6 @@ def private_panel():
                 url=f"https://t.me/{app.username}?startgroup=true",
             )
         ],
-        # E_X_1 and E_X_2 buttons below S_B_3
         [
             InlineKeyboardButton(
                 text="E_X_1",
