@@ -1,10 +1,13 @@
 import asyncio
-
 import os
-
 import re
 import json
+import glob
+import random
+import logging
+import requests
 from typing import Union
+from dotenv import load_dotenv
 
 import yt_dlp
 from pyrogram.enums import MessageEntityType
@@ -14,25 +17,124 @@ from youtubesearchpython.__future__ import VideosSearch
 from ShrutiMusic.utils.database import is_on_off
 from ShrutiMusic.utils.formatters import time_to_seconds
 
-
-
-import os
-import glob
-import random
-import logging
+# Load environment variables
+load_dotenv()
 
 def cookie_txt_file():
+    """
+    Enhanced cookie file handler with fallback options:
+    1. Check local cookies folder for .txt files
+    2. If no files found, check .env for COOKIE_URL
+    3. Download cookie file from URL if available
+    """
     folder_path = f"{os.getcwd()}/cookies"
-    filename = f"{os.getcwd()}/cookies/logs.csv"
+    log_filename = f"{os.getcwd()}/cookies/logs.csv"
+    
+    # Ensure cookies directory exists
+    os.makedirs(folder_path, exist_ok=True)
+    
+    # First try to find local .txt files
     txt_files = glob.glob(os.path.join(folder_path, '*.txt'))
-    if not txt_files:
-        raise FileNotFoundError("No .txt files found in the specified folder.")
-    cookie_txt_file = random.choice(txt_files)
-    with open(filename, 'a') as file:
-        file.write(f'Choosen File : {cookie_txt_file}\n')
-    return f"""cookies/{str(cookie_txt_file).split("/")[-1]}"""
+    
+    if txt_files:
+        # Local files found - use existing logic
+        cookie_txt_file = random.choice(txt_files)
+        with open(log_filename, 'a') as file:
+            file.write(f'Chosen Local File: {cookie_txt_file}\n')
+        return f"""cookies/{str(cookie_txt_file).split("/")[-1]}"""
+    
+    else:
+        # No local files found - check .env for URL
+        cookie_url = os.getenv('COOKIE_URL')
+        
+        if cookie_url:
+            try:
+                # Download cookie file from URL
+                response = requests.get(cookie_url, timeout=30)
+                response.raise_for_status()
+                
+                # Generate filename based on URL or timestamp
+                import time
+                timestamp = int(time.time())
+                cookie_filename = f"cookies/downloaded_cookie_{timestamp}.txt"
+                
+                # Save downloaded content
+                with open(cookie_filename, 'w') as file:
+                    file.write(response.text)
+                
+                # Log the download
+                with open(log_filename, 'a') as file:
+                    file.write(f'Downloaded Cookie File from URL: {cookie_url} -> {cookie_filename}\n')
+                
+                return cookie_filename
+                
+            except requests.RequestException as e:
+                # Log error and raise exception
+                with open(log_filename, 'a') as file:
+                    file.write(f'Failed to download cookie from URL: {cookie_url}, Error: {str(e)}\n')
+                
+                logging.error(f"Failed to download cookie file from URL: {e}")
+                raise FileNotFoundError(f"No local cookie files found and failed to download from URL: {cookie_url}")
+        
+        else:
+            # No local files and no URL in .env
+            with open(log_filename, 'a') as file:
+                file.write(f'No cookie files found locally and no COOKIE_URL in .env\n')
+            
+            raise FileNotFoundError("No .txt files found in cookies folder and no COOKIE_URL specified in .env file.")
 
-
+# Alternative function for multiple cookie URLs
+def get_cookie_from_multiple_sources():
+    """
+    Advanced cookie handler supporting multiple URLs and sources
+    Environment variables to set:
+    - COOKIE_URL_PRIMARY
+    - COOKIE_URL_SECONDARY
+    - COOKIE_URL_BACKUP
+    """
+    folder_path = f"{os.getcwd()}/cookies"
+    log_filename = f"{os.getcwd()}/cookies/logs.csv"
+    
+    os.makedirs(folder_path, exist_ok=True)
+    
+    # Check local files first
+    txt_files = glob.glob(os.path.join(folder_path, '*.txt'))
+    if txt_files:
+        cookie_file = random.choice(txt_files)
+        return f"""cookies/{str(cookie_file).split("/")[-1]}"""
+    
+    # Try multiple cookie URLs
+    cookie_urls = [
+        os.getenv('COOKIE_URL_PRIMARY'),
+        os.getenv('COOKIE_URL_SECONDARY'), 
+        os.getenv('COOKIE_URL_BACKUP'),
+        os.getenv('COOKIE_URL')  # Fallback to simple COOKIE_URL
+    ]
+    
+    for i, url in enumerate(cookie_urls):
+        if url:
+            try:
+                response = requests.get(url, timeout=30)
+                response.raise_for_status()
+                
+                import time
+                timestamp = int(time.time())
+                cookie_filename = f"cookies/downloaded_cookie_source_{i+1}_{timestamp}.txt"
+                
+                with open(cookie_filename, 'w') as file:
+                    file.write(response.text)
+                
+                with open(log_filename, 'a') as file:
+                    file.write(f'Downloaded Cookie from Source {i+1}: {url} -> {cookie_filename}\n')
+                
+                return cookie_filename
+                
+            except requests.RequestException as e:
+                with open(log_filename, 'a') as file:
+                    file.write(f'Failed to download from Source {i+1}: {url}, Error: {str(e)}\n')
+                continue
+    
+    raise FileNotFoundError("No cookie files available from any source (local or remote)")
 
 async def check_file_size(link):
     async def get_format_info(link):
@@ -82,7 +184,6 @@ async def shell_cmd(cmd):
         else:
             return errorz.decode("utf-8")
     return out.decode("utf-8")
-
 
 class YouTubeAPI:
     def __init__(self):
@@ -178,7 +279,7 @@ class YouTubeAPI:
             link = link.split("&")[0]
         proc = await asyncio.create_subprocess_exec(
             "yt-dlp",
-            "--cookies",cookie_txt_file(),
+            "--cookies", cookie_txt_file(),
             "-g",
             "-f",
             "18/best",
@@ -235,7 +336,7 @@ class YouTubeAPI:
             link = self.base + link
         if "&" in link:
             link = link.split("&")[0]
-        ytdl_opts = {"quiet": True, "cookiefile" : cookie_txt_file()}
+        ytdl_opts = {"quiet": True, "cookiefile": cookie_txt_file()}
         ydl = yt_dlp.YoutubeDL(ytdl_opts)
         with ydl:
             formats_available = []
@@ -298,6 +399,7 @@ class YouTubeAPI:
         if videoid:
             link = self.base + link
         loop = asyncio.get_running_loop()
+        
         def audio_dl():
             ydl_optssx = {
                 "format": "bestaudio/best",
@@ -305,7 +407,7 @@ class YouTubeAPI:
                 "geo_bypass": True,
                 "nocheckcertificate": True,
                 "quiet": True,
-                "cookiefile" : cookie_txt_file(),
+                "cookiefile": cookie_txt_file(),
                 "no_warnings": True,
             }
             x = yt_dlp.YoutubeDL(ydl_optssx)
@@ -323,7 +425,7 @@ class YouTubeAPI:
                 "geo_bypass": True,
                 "nocheckcertificate": True,
                 "quiet": True,
-                "cookiefile" : cookie_txt_file(),
+                "cookiefile": cookie_txt_file(),
                 "no_warnings": True,
             }
             x = yt_dlp.YoutubeDL(ydl_optssx)
@@ -344,7 +446,7 @@ class YouTubeAPI:
                 "nocheckcertificate": True,
                 "quiet": True,
                 "no_warnings": True,
-                "cookiefile" : cookie_txt_file(),
+                "cookiefile": cookie_txt_file(),
                 "prefer_ffmpeg": True,
                 "merge_output_format": "mp4",
             }
@@ -360,7 +462,7 @@ class YouTubeAPI:
                 "nocheckcertificate": True,
                 "quiet": True,
                 "no_warnings": True,
-                "cookiefile" : cookie_txt_file(),
+                "cookiefile": cookie_txt_file(),
                 "prefer_ffmpeg": True,
                 "postprocessors": [
                     {
@@ -388,7 +490,7 @@ class YouTubeAPI:
             else:
                 proc = await asyncio.create_subprocess_exec(
                     "yt-dlp",
-                    "--cookies",cookie_txt_file(),
+                    "--cookies", cookie_txt_file(),
                     "-g",
                     "-f",
                     "18/best",
@@ -401,16 +503,16 @@ class YouTubeAPI:
                     downloaded_file = stdout.decode().split("\n")[0]
                     direct = False
                 else:
-                   file_size = await check_file_size(link)
-                   if not file_size:
-                     print("None file Size")
-                     return
-                   total_size_mb = file_size / (1024 * 1024)
-                   if total_size_mb > 250:
-                     print(f"File size {total_size_mb:.2f} MB exceeds the 100MB limit.")
-                     return None
-                   direct = True
-                   downloaded_file = await loop.run_in_executor(None, video_dl)
+                    file_size = await check_file_size(link)
+                    if not file_size:
+                        print("None file Size")
+                        return
+                    total_size_mb = file_size / (1024 * 1024)
+                    if total_size_mb > 250:
+                        print(f"File size {total_size_mb:.2f} MB exceeds the 250MB limit.")
+                        return None
+                    direct = True
+                    downloaded_file = await loop.run_in_executor(None, video_dl)
         else:
             direct = True
             downloaded_file = await loop.run_in_executor(None, audio_dl)
