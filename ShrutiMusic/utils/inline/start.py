@@ -1,8 +1,6 @@
 from pyrogram.types import InlineKeyboardButton
-
 import config
 from ShrutiMusic import app
-
 
 def start_panel(_):
     buttons = [
@@ -12,9 +10,11 @@ def start_panel(_):
             ),
             InlineKeyboardButton(text=_["S_B_2"], url=config.SUPPORT_GROUP),
         ],
+        [
+            InlineKeyboardButton(text=_["E_X_1"], url="https://github.com/NoxxOP/ShrutiMusic/fork")
+        ],
     ]
     return buttons
-
 
 def private_panel(_):
     buttons = [
@@ -25,8 +25,11 @@ def private_panel(_):
             )
         ],
         [
+            InlineKeyboardButton(text=_["E_X_1"], url="https://github.com/NoxxOP/ShrutiMusic/fork")
+        ],
+        [
             InlineKeyboardButton(text=_["S_B_6"], url=config.SUPPORT_CHANNEL),
-            InlineKeyboardButton(text=_["N_Y_1"], callback_data="LG"),
+            InlineKeyboardButton(text=_["S_B_5"], user_id=config.OWNER_ID),
             InlineKeyboardButton(text=_["S_B_2"], url=config.SUPPORT_GROUP),
         ],
         [
