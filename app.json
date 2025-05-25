@@ -1,12 +1,12 @@
 {
-    "name": "Noxx Music",
+    "name": "Shruti Music",
     "description": "A Telegram Music Player Bot, written in Python with Pyrogram and Py-Tgcalls.",
-    "logo": "https://telegra.ph/Aviax-02-24",
+    "logo": "https://files.catbox.moe/2oj1vp.webp",
     "keywords": [
         "python3",
         "telegram",
         "bot",
-        "NoxxNetwork",
+        "ShrutiBots",
         "MusicBot",
         "telegram-bot",
         "pyrogram"
@@ -79,7 +79,7 @@
         },
         "API_KEY": {
             "description": "An additional API key for your bot (if needed)",
-            "value": "30DxNexGenBots19bc74",
+            "value": "No Need, IF You Want DM @WTF_WhyMeeh",
             "required": false
         }
     },
