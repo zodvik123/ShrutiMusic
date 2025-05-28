@@ -1,0 +1,6 @@
+services:
+  - type: worker
+    name: shrutimusic
+    env: docker
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
