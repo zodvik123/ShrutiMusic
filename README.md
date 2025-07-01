@@ -83,7 +83,7 @@ sudo apt-get install python3-pip ffmpeg git -y
 
 ```bash
 git clone https://github.com/NoxxOP/ShrutiMusic
-cd ShrutiMusicBot
+cd ShrutiMusic
 ```
 
 #### Setup Virtual Environment
