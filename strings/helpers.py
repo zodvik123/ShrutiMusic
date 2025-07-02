@@ -155,3 +155,10 @@ HELP_16 = """
 
 /Privacy : Display the privacy statement for Sarcastic Bot 
 """
+
+HELP_17 = """
+<b><u>ᴇxᴛʀᴀ ғᴇᴀᴛᴜʀᴇs</b></u>
+
+/tagall [ʏᴏᴜʀ ᴍᴇssᴀɢᴇ ᴏʀ ʀᴇᴘʟʏ ᴏɴ ᴀɴʏ ᴄʜᴀᴛ] : ᴛᴀɢ ᴀʟʟ ᴜsᴇʀs
+/admin [ʏᴏᴜʀ ᴍᴇssᴀɢᴇ ᴏʀ ʀᴇᴘʟʏ ᴏɴ ᴀɴʏ ᴄʜᴀᴛ] : ᴛᴀɢ ᴀʟʟ ᴀᴅᴍɪɴs
+"""
