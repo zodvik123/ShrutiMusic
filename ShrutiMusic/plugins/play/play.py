@@ -24,6 +24,22 @@ from ShrutiMusic.utils.logger import play_logs
 from ShrutiMusic.utils.stream.stream import stream
 from config import BANNED_USERS, lyrical
 
+# Global dictionary to store video/audio state for each chat
+CHAT_VIDEO_STATE = {}
+
+def set_video_state(chat_id, is_video):
+    """Set video state for a chat"""
+    CHAT_VIDEO_STATE[chat_id] = is_video
+
+def get_video_state(chat_id):
+    """Get video state for a chat, defaults to False (audio)"""
+    return CHAT_VIDEO_STATE.get(chat_id, False)
+
+def clear_video_state(chat_id):
+    """Clear video state when playback ends"""
+    if chat_id in CHAT_VIDEO_STATE:
+        del CHAT_VIDEO_STATE[chat_id]
+
 
 @app.on_message(
     filters.command(
@@ -63,8 +79,12 @@ async def play_commnd(
     user_id = message.from_user.id
     user_name = message.from_user.first_name
     
-    # Store original video preference to maintain consistency
-    original_video_mode = video
+    # Determine if this is a video command and store state
+    command_used = message.command[0].lower()
+    is_video_command = 'v' in command_used  # vplay, cvplay, vplayforce, cvplayforce
+    
+    # Store the video state for this chat
+    set_video_state(chat_id, is_video_command)
     
     audio_telegram = (
         (message.reply_to_message.audio or message.reply_to_message.voice)
@@ -78,6 +98,8 @@ async def play_commnd(
     )
     
     if audio_telegram:
+        # For audio files, always use audio mode regardless of command
+        set_video_state(chat_id, False)
         if audio_telegram.file_size > 104857600:
             return await mystic.edit_text(_["play_5"])
         duration_min = seconds_to_min(audio_telegram.duration)
@@ -106,7 +128,7 @@ async def play_commnd(
                     chat_id,
                     user_name,
                     message.chat.id,
-                    video=False,  # Force audio for audio files
+                    video=False,  # Always False for audio files
                     streamtype="telegram",
                     forceplay=fplay,
                 )
@@ -118,6 +140,8 @@ async def play_commnd(
             return await mystic.delete()
         return
     elif video_telegram:
+        # For video files, use video mode regardless of command
+        set_video_state(chat_id, True)
         if message.reply_to_message.document:
             try:
                 ext = video_telegram.file_name.split(".")[-1]
@@ -151,7 +175,7 @@ async def play_commnd(
                     chat_id,
                     user_name,
                     message.chat.id,
-                    video=True,  # Keep video for video files
+                    video=True,  # Always True for video files
                     streamtype="telegram",
                     forceplay=fplay,
                 )
@@ -286,7 +310,7 @@ async def play_commnd(
                     chat_id,
                     user_name,
                     message.chat.id,
-                    video=original_video_mode,  # Use original video mode
+                    video=is_video_command,  # Use stored video state
                     streamtype="soundcloud",
                     forceplay=fplay,
                 )
@@ -318,7 +342,7 @@ async def play_commnd(
                     chat_id,
                     message.from_user.first_name,
                     message.chat.id,
-                    video=original_video_mode,  # Use original video mode
+                    video=is_video_command,  # Use stored video state
                     streamtype="index",
                     forceplay=fplay,
                 )
@@ -358,7 +382,7 @@ async def play_commnd(
                     _,
                     track_id,
                     user_id,
-                    "v" if original_video_mode else "a",  # Use original video mode
+                    "v" if is_video_command else "a",
                     "c" if channel else "g",
                     "f" if fplay else "d",
                 )
@@ -375,7 +399,7 @@ async def play_commnd(
                 chat_id,
                 user_name,
                 message.chat.id,
-                video=original_video_mode,  # Use original video mode consistently
+                video=is_video_command,  # Use stored video state
                 streamtype=streamtype,
                 spotify=spotify,
                 forceplay=fplay,
@@ -494,8 +518,10 @@ async def play_music(client, CallbackQuery, _):
             reply_markup=InlineKeyboardMarkup(buttons),
         )
     
-    # Maintain consistent video mode based on original selection
-    video = True if mode == "v" else False  # Changed from None to False for consistency
+    # Get and store video state based on mode
+    is_video = mode == "v"
+    set_video_state(chat_id, is_video)
+    
     ffplay = True if fplay == "f" else None
     
     try:
@@ -507,7 +533,7 @@ async def play_music(client, CallbackQuery, _):
             chat_id,
             user_name,
             CallbackQuery.message.chat.id,
-            video=video,  # Consistent video parameter
+            video=is_video,  # Use proper boolean value
             streamtype="youtube",
             forceplay=ffplay,
         )
@@ -563,8 +589,10 @@ async def play_playlists_command(client, CallbackQuery, _):
     )
     videoid = lyrical.get(videoid)
     
-    # Maintain consistent video mode
-    video = True if mode == "v" else False  # Changed from None to False
+    # Get and store video state based on mode
+    is_video = mode == "v"
+    set_video_state(chat_id, is_video)
+    
     ffplay = True if fplay == "f" else None
     spotify = True
     
@@ -608,7 +636,7 @@ async def play_playlists_command(client, CallbackQuery, _):
             chat_id,
             user_name,
             CallbackQuery.message.chat.id,
-            video=video,  # Consistent video parameter
+            video=is_video,  # Use proper boolean value
             streamtype="playlist",
             spotify=spotify,
             forceplay=ffplay,
@@ -683,3 +711,15 @@ async def slider_queries(client, CallbackQuery, _):
         return await CallbackQuery.edit_message_media(
             media=med, reply_markup=InlineKeyboardMarkup(buttons)
         )
+
+
+# Add this function to your stream.py file to maintain video state during reconnection
+def get_stream_video_state(chat_id):
+    """Function to be called from stream module to get video state"""
+    return get_video_state(chat_id)
+
+
+# Add this function to clear state when stream ends
+def on_stream_end(chat_id):
+    """Call this when stream ends to clear state"""
+    clear_video_state(chat_id)
