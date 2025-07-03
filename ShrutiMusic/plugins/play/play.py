@@ -62,6 +62,10 @@ async def play_commnd(
     spotify = None
     user_id = message.from_user.id
     user_name = message.from_user.first_name
+    
+    # Store original video preference to maintain consistency
+    original_video_mode = video
+    
     audio_telegram = (
         (message.reply_to_message.audio or message.reply_to_message.voice)
         if message.reply_to_message
@@ -72,6 +76,7 @@ async def play_commnd(
         if message.reply_to_message
         else None
     )
+    
     if audio_telegram:
         if audio_telegram.file_size > 104857600:
             return await mystic.edit_text(_["play_5"])
@@ -101,6 +106,7 @@ async def play_commnd(
                     chat_id,
                     user_name,
                     message.chat.id,
+                    video=False,  # Force audio for audio files
                     streamtype="telegram",
                     forceplay=fplay,
                 )
@@ -145,7 +151,7 @@ async def play_commnd(
                     chat_id,
                     user_name,
                     message.chat.id,
-                    video=True,
+                    video=True,  # Keep video for video files
                     streamtype="telegram",
                     forceplay=fplay,
                 )
@@ -280,6 +286,7 @@ async def play_commnd(
                     chat_id,
                     user_name,
                     message.chat.id,
+                    video=original_video_mode,  # Use original video mode
                     streamtype="soundcloud",
                     forceplay=fplay,
                 )
@@ -311,7 +318,7 @@ async def play_commnd(
                     chat_id,
                     message.from_user.first_name,
                     message.chat.id,
-                    video=video,
+                    video=original_video_mode,  # Use original video mode
                     streamtype="index",
                     forceplay=fplay,
                 )
@@ -337,6 +344,7 @@ async def play_commnd(
         except:
             return await mystic.edit_text(_["play_3"])
         streamtype = "youtube"
+        
     if str(playmode) == "Direct":
         if not plist_type:
             if details["duration_min"]:
@@ -350,7 +358,7 @@ async def play_commnd(
                     _,
                     track_id,
                     user_id,
-                    "v" if video else "a",
+                    "v" if original_video_mode else "a",  # Use original video mode
                     "c" if channel else "g",
                     "f" if fplay else "d",
                 )
@@ -367,7 +375,7 @@ async def play_commnd(
                 chat_id,
                 user_name,
                 message.chat.id,
-                video=video,
+                video=original_video_mode,  # Use original video mode consistently
                 streamtype=streamtype,
                 spotify=spotify,
                 forceplay=fplay,
@@ -485,8 +493,11 @@ async def play_music(client, CallbackQuery, _):
             _["play_13"],
             reply_markup=InlineKeyboardMarkup(buttons),
         )
-    video = True if mode == "v" else None
+    
+    # Maintain consistent video mode based on original selection
+    video = True if mode == "v" else False  # Changed from None to False for consistency
     ffplay = True if fplay == "f" else None
+    
     try:
         await stream(
             _,
@@ -496,7 +507,7 @@ async def play_music(client, CallbackQuery, _):
             chat_id,
             user_name,
             CallbackQuery.message.chat.id,
-            video,
+            video=video,  # Consistent video parameter
             streamtype="youtube",
             forceplay=ffplay,
         )
@@ -551,9 +562,12 @@ async def play_playlists_command(client, CallbackQuery, _):
         _["play_2"].format(channel) if channel else _["play_1"]
     )
     videoid = lyrical.get(videoid)
-    video = True if mode == "v" else None
+    
+    # Maintain consistent video mode
+    video = True if mode == "v" else False  # Changed from None to False
     ffplay = True if fplay == "f" else None
     spotify = True
+    
     if ptype == "yt":
         spotify = False
         try:
@@ -594,7 +608,7 @@ async def play_playlists_command(client, CallbackQuery, _):
             chat_id,
             user_name,
             CallbackQuery.message.chat.id,
-            video,
+            video=video,  # Consistent video parameter
             streamtype="playlist",
             spotify=spotify,
             forceplay=ffplay,
