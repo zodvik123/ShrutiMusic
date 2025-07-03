@@ -39,7 +39,17 @@
         },
         "OWNER_USERNAME": {
             "description": "The username of the owner (without @)",
-            "value": "",
+            "value": "WTF_WhyMeeh",
+            "required": true
+        },
+        "BOT_USERNAME": {
+            "description": "The username of your bot (without @)",
+            "value": "ShrutixMusicBot",
+            "required": true
+        },
+        "UPSTREAM_REPO": {
+            "description": "URL of your GitHub repository",
+            "value": "https://github.com/NoxxOP/ShrutiMusic",
             "required": false
         },
         "STRING_SESSION": {
