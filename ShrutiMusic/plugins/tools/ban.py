@@ -25,7 +25,7 @@ from ShrutiMusic.utils.functions import (
     extract_user_and_reason,
     time_converter,
 )
-from utils.permissions import adminsOnly, member_permissions
+from ShrutiMusic.utils.permissions import adminsOnly, member_permissions
 from config import BANNED_USERS
 
 warnsdb = mongodb.warns
