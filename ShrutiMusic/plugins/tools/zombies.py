@@ -4,7 +4,7 @@ from pyrogram import filters
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.errors import FloodWait
 from ShrutiMusic import app
-from utils.permissions import adminsOnly
+from ShrutiMusic.utils.permissions import adminsOnly
 
 chatQueue = []
 
