@@ -172,3 +172,32 @@ HELP_17 = """
 /bowling : Pʟᴀʏs ʙᴏᴡʟɪɴɢ.
 𝐌𝐨𝐫𝐞 𝐂𝐨𝐦𝐦𝐚𝐧𝐝𝐬 𝐔𝐩𝐝𝐚𝐭𝐞𝐝 𝐒𝐨𝐨𝐧..
 """
+
+HELP_17 = """
+<b><u>ᴀᴅᴍɪɴ ᴄᴏᴍᴍᴀɴᴅs</b></u>
+/ban - Ban A User
+/banall - Ban All Users
+/sban - Delete all messages of user that sended in group and ban the user
+/tban - Ban A User For Specific Time
+/unban - Unban A User
+/warn - Warn A User
+/swarn - Delete all the message sended in group and warn the user
+/rmwarns - Remove All Warning of A User
+/warns - Show Warning Of A User
+/kick - Kick A User
+/skick - Delete the replied message kicking its sender
+/purge - Purge Messages
+/purge [n] - Purge "n" number of messages from replied message
+/del - Delete Replied Message
+/promote - Promote A Member
+/fullpromote - Promote A Member With All Rights
+/demote - Demote A Member
+/pin - Pin A Message
+/unpin - unpin a message
+/unpinall - unpinall messages
+/mute - Mute A User
+/tmute - Mute A User For Specific Time
+/unmute - Unmute A User
+/zombies - Ban Deleted Accounts
+/report | @admins | @admin - Report A Message To Admins.
+"""
