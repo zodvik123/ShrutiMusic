@@ -17,7 +17,7 @@ from typing import Dict, Union
 from ShrutiMusic import app
 from ShrutiMusic.misc import SUDOERS
 from ShrutiMusic.core.mongo import mongodb
-from utils.error import capture_err
+from ShrutiMusic.utils.error import capture_err
 from ShrutiMusic.utils.keyboard import ikb
 from ShrutiMusic.utils.database import save_filter
 from ShrutiMusic.utils.functions import (
