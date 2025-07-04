@@ -110,6 +110,7 @@ votemode = {}
 autoclean = []
 confirmer = {}
 
+TEMP_DB_FOLDER = "tempdb"
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # ⏳ Time Conversion Utility
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
