@@ -1,6 +1,5 @@
 import asyncio
 from contextlib import suppress
-
 from pyrogram import filters
 from pyrogram.enums import ChatMembersFilter, ChatMemberStatus, ChatType
 from pyrogram.types import (
@@ -13,7 +12,6 @@ from pyrogram.types import (
 )
 from string import ascii_lowercase
 from typing import Dict, Union
-
 from ShrutiMusic import app
 from ShrutiMusic.misc import SUDOERS
 from ShrutiMusic.core.mongo import mongodb
@@ -58,7 +56,6 @@ __HELP__ = """
 /zombies - Ban Deleted Accounts
 /report | @admins | @admin - Report A Message To Admins."""
 
-
 async def int_to_alpha(user_id: int) -> str:
     alphabet = list(ascii_lowercase)[:10]
     text = ""
@@ -66,7 +63,6 @@ async def int_to_alpha(user_id: int) -> str:
     for i in user_id:
         text += alphabet[int(i)]
     return text
-
 
 async def get_warns_count() -> dict:
     chats_count = 0
@@ -77,13 +73,11 @@ async def get_warns_count() -> dict:
         chats_count += 1
     return {"chats_count": chats_count, "warns_count": warns_count}
 
-
 async def get_warns(chat_id: int) -> Dict[str, int]:
     warns = await warnsdb.find_one({"chat_id": chat_id})
     if not warns:
         return {}
     return warns["warns"]
-
 
 async def get_warn(chat_id: int, name: str) -> Union[bool, dict]:
     name = name.lower().strip()
@@ -91,16 +85,13 @@ async def get_warn(chat_id: int, name: str) -> Union[bool, dict]:
     if name in warns:
         return warns[name]
 
-
 async def add_warn(chat_id: int, name: str, warn: dict):
     name = name.lower().strip()
     warns = await get_warns(chat_id)
     warns[name] = warn
-
     await warnsdb.update_one(
         {"chat_id": chat_id}, {"$set": {"warns": warns}}, upsert=True
     )
-
 
 async def remove_warns(chat_id: int, name: str) -> bool:
     warnsd = await get_warns(chat_id)
@@ -115,45 +106,40 @@ async def remove_warns(chat_id: int, name: str) -> bool:
         return True
     return False
 
-
 @app.on_message(filters.command(["kick", "skick"]) & ~filters.private & ~BANNED_USERS)
 @adminsOnly("can_restrict_members")
 async def kickFunc(_, message: Message):
     user_id, reason = await extract_user_and_reason(message)
     if not user_id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ғɪɴᴅ ᴛʜᴀᴛ ᴜsᴇʀ")
+        return await message.reply_text("<b>I can't find that user</b>", parse_mode="HTML")
     if user_id == app.id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ᴋɪᴄᴋ ᴍʏsᴇʟғ, ɪ ᴄᴀɴ ʟᴇᴀᴠᴇ ɪғ ʏᴏᴜ ᴡᴀɴᴛ.")
+        return await message.reply_text("<b>I can't kick myself, I can leave if you want.</b>", parse_mode="HTML")
     if user_id in SUDOERS:
-        return await message.reply_text("ʏᴏᴜ ᴡᴀɴɴᴀ ᴋɪᴄᴋ ᴛʜᴇ ᴇʟᴇᴠᴀᴛᴇᴅ ᴏɴᴇ ?")
+        return await message.reply_text("<b>You wanna kick the elevated one?</b>", parse_mode="HTML")
     if user_id in [
         member.user.id
         async for member in app.get_chat_members(
             chat_id=message.chat.id, filter=ChatMembersFilter.ADMINISTRATORS
         )
     ]:
-        return await message.reply_text(
-            "ɪ ᴄᴀɴ'ᴛ ᴋɪᴄᴋ ᴀɴ ᴀᴅᴍɪɴ, ʏᴏᴜ ᴋɴᴏᴡ ᴛʜᴇ ʀᴜʟᴇs, ʏᴏᴜ ᴋɴᴏᴡ ᴛʜᴇ ʀᴜʟᴇs, sᴏ ᴅᴏ ɪ "
-        )
+        return await message.reply_text("<b>I can't kick an admin</b>", parse_mode="HTML")
+    
     mention = (await app.get_users(user_id)).mention
     msg = f"""
-**ᴋɪᴄᴋᴇᴅ ᴜsᴇʀ:** {mention}
-**ᴋɪᴄᴋᴇᴅ ʙʏ:** {message.from_user.mention if message.from_user else 'ᴀɴᴏɴᴍᴏᴜs'}
-**ʀᴇᴀsᴏɴ:** {reason or 'ɴᴏ ʀᴇᴀsᴏɴ ᴘʀᴏᴠɪᴅᴇᴅ'}"""
+<b>Kicked User:</b> {mention}
+<b>Kicked By:</b> {message.from_user.mention if message.from_user else 'Anonymous'}
+<b>Reason:</b> {reason or 'No reason provided'}"""
+    
     await message.chat.ban_member(user_id)
     replied_message = message.reply_to_message
     if replied_message:
         message = replied_message
-    await message.reply_text(msg)
+    await message.reply_text(msg, parse_mode="HTML")
     await asyncio.sleep(1)
     await message.chat.unban_member(user_id)
     if message.command[0][0] == "s":
         await message.reply_to_message.delete()
         await app.delete_user_history(message.chat.id, user_id)
-
-
-# Ban members
-
 
 @app.on_message(
     filters.command(["ban", "sban", "tban"]) & ~filters.private & ~BANNED_USERS
@@ -163,20 +149,18 @@ async def banFunc(_, message: Message):
     user_id, reason = await extract_user_and_reason(message, sender_chat=True)
 
     if not user_id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ғɪɴᴅ ᴛʜᴀᴛ ᴜsᴇʀ.")
+        return await message.reply_text("<b>I can't find that user.</b>", parse_mode="HTML")
     if user_id == app.id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ʙᴀɴ ᴍʏsᴇʟғ, ɪ ᴄᴀɴ ʟᴇᴀᴠᴇ ɪғ ʏᴏᴜ ᴡᴀɴᴛ.")
+        return await message.reply_text("<b>I can't ban myself</b>", parse_mode="HTML")
     if user_id in SUDOERS:
-        return await message.reply_text("ʏᴏᴜ ᴡᴀɴɴᴀ ʙᴀɴ ᴛʜᴇ ᴇʟᴇᴠᴀᴛᴇᴅ ᴏɴᴇ?, ʀᴇᴄᴏɴsɪᴅᴇʀ!")
+        return await message.reply_text("<b>You wanna ban the elevated one?</b>", parse_mode="HTML")
     if user_id in [
         member.user.id
         async for member in app.get_chat_members(
             chat_id=message.chat.id, filter=ChatMembersFilter.ADMINISTRATORS
         )
     ]:
-        return await message.reply_text(
-            "ɪ ᴄᴀɴ'ᴛ ʙᴀɴ ᴀɴ ᴀᴅᴍɪɴ, ʏᴏᴜ ᴋɴᴏᴡ ᴛʜᴇ ʀᴜʟᴇs, sᴏ ᴅᴏ ɪ."
-        )
+        return await message.reply_text("<b>I can't ban an admin</b>", parse_mode="HTML")
 
     try:
         mention = (await app.get_users(user_id)).mention
@@ -188,8 +172,8 @@ async def banFunc(_, message: Message):
         )
 
     msg = (
-        f"**ʙᴀɴɴᴇᴅ ᴜsᴇʀ:** {mention}\n"
-        f"**ʙᴀɴɴᴇᴅ ʙʏ:** {message.from_user.mention if message.from_user else 'Anon'}\n"
+        f"<b>Banned User:</b> {mention}\n"
+        f"<b>Banned By:</b> {message.from_user.mention if message.from_user else 'Anon'}\n"
     )
     if message.command[0][0] == "s":
         await message.reply_to_message.delete()
@@ -199,56 +183,44 @@ async def banFunc(_, message: Message):
         time_value = split[0]
         temp_reason = split[1] if len(split) > 1 else ""
         temp_ban = await time_converter(message, time_value)
-        msg += f"**ʙᴀɴɴᴇᴅ ғᴏʀ:** {time_value}\n"
+        msg += f"<b>Banned For:</b> {time_value}\n"
         if temp_reason:
-            msg += f"**ʀᴇᴀsᴏɴ:** {temp_reason}"
+            msg += f"<b>Reason:</b> {temp_reason}"
         with suppress(AttributeError):
             if len(time_value[:-1]) < 3:
                 await message.chat.ban_member(user_id, until_date=temp_ban)
                 replied_message = message.reply_to_message
                 if replied_message:
                     message = replied_message
-                await message.reply_text(msg)
+                await message.reply_text(msg, parse_mode="HTML")
             else:
-                await message.reply_text("ʏᴏᴜ ᴄᴀɴ'ᴛ ᴜsᴇ ᴍᴏʀᴇ ᴛʜᴀɴ 𝟿𝟿")
+                await message.reply_text("<b>You can't use more than 99</b>", parse_mode="HTML")
         return
     if reason:
-        msg += f"**ʀᴇᴀsᴏɴ:** {reason}"
+        msg += f"<b>Reason:</b> {reason}"
     await message.chat.ban_member(user_id)
     replied_message = message.reply_to_message
     if replied_message:
         message = replied_message
-    await message.reply_text(msg)
-
-
-# Unban members
-
+    await message.reply_text(msg, parse_mode="HTML")
 
 @app.on_message(filters.command("unban") & ~filters.private & ~BANNED_USERS)
 @adminsOnly("can_restrict_members")
 async def unban_func(_, message: Message):
-    # we don't need reasons for unban, also, we
-    # don't need to get "text_mention" entity, because
-    # normal users won't get text_mention if the user
-    # they want to unban is not in the group.
     reply = message.reply_to_message
     user_id = await extract_user(message)
     if not user_id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ғɪɴᴅ ᴛʜᴀᴛ ᴜsᴇʀ.")
+        return await message.reply_text("<b>I can't find that user.</b>", parse_mode="HTML")
 
     if reply and reply.sender_chat and reply.sender_chat != message.chat.id:
-        return await message.reply_text("ʏᴏᴜ ᴄᴀɴɴᴏᴛ ᴜɴʙᴀɴ ᴀ ᴄʜᴀɴɴᴇʟ")
+        return await message.reply_text("<b>You cannot unban a channel</b>", parse_mode="HTML")
 
     await message.chat.unban_member(user_id)
     umention = (await app.get_users(user_id)).mention
     replied_message = message.reply_to_message
     if replied_message:
         message = replied_message
-    await message.reply_text(f"ᴜɴʙᴀɴɴᴇᴅ! {umention}")
-
-
-# Promote Members
-
+    await message.reply_text(f"<b>Unbanned!</b> {umention}", parse_mode="HTML")
 
 @app.on_message(
     filters.command(["promote", "fullpromote"]) & ~filters.private & ~BANNED_USERS
@@ -257,15 +229,15 @@ async def unban_func(_, message: Message):
 async def promoteFunc(_, message: Message):
     user_id = await extract_user(message)
     if not user_id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ғɪɴᴅ ᴛʜᴀᴛ ᴜsᴇʀ.")
+        return await message.reply_text("<b>I can't find that user.</b>", parse_mode="HTML")
 
     bot = (await app.get_chat_member(message.chat.id, app.id)).privileges
     if user_id == app.id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ᴘʀᴏᴍᴏᴛᴇ ᴍʏsᴇʟғ.")
+        return await message.reply_text("<b>I can't promote myself.</b>", parse_mode="HTML")
     if not bot:
-        return await message.reply_text("ɪ'ᴍ ɴᴏᴛ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜɪs ᴄʜᴀᴛ.")
+        return await message.reply_text("<b>I'm not an admin in this chat.</b>", parse_mode="HTML")
     if not bot.can_promote_members:
-        return await message.reply_text("ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴇɴᴏᴜɢʜ ᴘᴇʀᴍɪssɪᴏɴs")
+        return await message.reply_text("<b>I don't have enough permissions</b>", parse_mode="HTML")
 
     umention = (await app.get_users(user_id)).mention
 
@@ -283,7 +255,7 @@ async def promoteFunc(_, message: Message):
                 can_manage_video_chats=bot.can_manage_video_chats,
             ),
         )
-        return await message.reply_text(f"ғᴜʟʟʏ ᴘʀᴏᴍᴏᴛᴇᴅ! {umention}")
+        return await message.reply_text(f"<b>Fully promoted!</b> {umention}", parse_mode="HTML")
 
     await message.chat.promote_member(
         user_id=user_id,
@@ -298,11 +270,7 @@ async def promoteFunc(_, message: Message):
             can_manage_video_chats=bot.can_manage_video_chats,
         ),
     )
-    await message.reply_text(f"ᴘʀᴏᴍᴏᴛᴇᴅ! {umention}")
-
-
-# Demote Member
-
+    await message.reply_text(f"<b>Promoted!</b> {umention}", parse_mode="HTML")
 
 @app.on_message(filters.command("purge") & ~filters.private)
 @adminsOnly("can_delete_messages")
@@ -311,7 +279,7 @@ async def purgeFunc(_, message: Message):
     await message.delete()
 
     if not repliedmsg:
-        return await message.reply_text("ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴛᴏ ᴘᴜʀɢᴇ ғʀᴏᴍ.")
+        return await message.reply_text("<b>Reply to a message to purge from.</b>", parse_mode="HTML")
 
     cmd = message.command
     if len(cmd) > 1 and cmd[1].isdigit():
@@ -324,24 +292,17 @@ async def purgeFunc(_, message: Message):
     chat_id = message.chat.id
     message_ids = []
 
-    for message_id in range(
-        repliedmsg.id,
-        purge_to,
-    ):
+    for message_id in range(repliedmsg.id, purge_to):
         message_ids.append(message_id)
 
-        # Max message deletion limit is 100
         if len(message_ids) == 100:
             await app.delete_messages(
                 chat_id=chat_id,
                 message_ids=message_ids,
-                revoke=True,  # For both sides
+                revoke=True,
             )
-
-            # To delete more than 100 messages, start again
             message_ids = []
 
-    # Delete if any messages left
     if len(message_ids) > 0:
         await app.delete_messages(
             chat_id=chat_id,
@@ -349,28 +310,24 @@ async def purgeFunc(_, message: Message):
             revoke=True,
         )
 
-
 @app.on_message(filters.command("del") & ~filters.private)
 @adminsOnly("can_delete_messages")
 async def deleteFunc(_, message: Message):
     if not message.reply_to_message:
-        return await message.reply_text("ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴛᴏ ᴅᴇʟᴇᴛᴇ ɪᴛ")
+        return await message.reply_text("<b>Reply to a message to delete it</b>", parse_mode="HTML")
     await message.reply_to_message.delete()
     await message.delete()
-
 
 @app.on_message(filters.command("demote") & ~filters.private & ~BANNED_USERS)
 @adminsOnly("can_promote_members")
 async def demote(_, message: Message):
     user_id = await extract_user(message)
     if not user_id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ғɪɴᴅ ᴛʜᴀᴛ ᴜsᴇʀ.")
+        return await message.reply_text("<b>I can't find that user.</b>", parse_mode="HTML")
     if user_id == app.id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ᴅᴇᴍᴏᴛᴇ ᴍʏsᴇʟғ.")
+        return await message.reply_text("<b>I can't demote myself.</b>", parse_mode="HTML")
     if user_id in SUDOERS:
-        return await message.reply_text(
-            "ʏᴏᴜ ᴡᴀɴɴᴀ ᴅᴇᴍᴏᴛᴇ ᴛʜᴇ ᴇʟᴇᴠᴀᴛᴇᴅ ᴏɴᴇ?, ʀᴇᴄᴏɴsɪᴅᴇʀ!"
-        )
+        return await message.reply_text("<b>You wanna demote the elevated one?</b>", parse_mode="HTML")
     try:
         member = await app.get_chat_member(message.chat.id, user_id)
         if member.status == ChatMemberStatus.ADMINISTRATOR:
@@ -388,102 +345,90 @@ async def demote(_, message: Message):
                 ),
             )
             umention = (await app.get_users(user_id)).mention
-            await message.reply_text(f"ᴅᴇᴍᴏᴛᴇᴅ! {umention}")
+            await message.reply_text(f"<b>Demoted!</b> {umention}", parse_mode="HTML")
         else:
-            await message.reply_text("ᴛʜᴇ ᴘᴇʀsᴏɴ ʏᴏᴜ ᴍᴇɴᴛɪᴏɴᴇᴅ ɪs ɴᴏᴛ ᴀɴ ᴀᴅᴍɪɴ.")
+            await message.reply_text("<b>The person you mentioned is not an admin.</b>", parse_mode="HTML")
     except Exception as e:
-        await message.reply_text(e)
-
-
-# Pin Messages
-
+        await message.reply_text(f"<b>Error:</b> {e}", parse_mode="HTML")
 
 @app.on_message(filters.command(["unpinall"]) & filters.group & ~BANNED_USERS)
 @adminsOnly("can_pin_messages")
 async def pin(_, message: Message):
-    if message.command[0] == "unpinall":
-        return await message.reply_text(
-            "Aʀᴇ ʏᴏᴜ sᴜʀᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴜɴᴘɪɴ ᴀʟʟ ᴍᴇssᴀɢᴇs?",
-            reply_markup=InlineKeyboardMarkup(
+    return await message.reply_text(
+        "<b>Are you sure you want to unpin all messages?</b>",
+        reply_markup=InlineKeyboardMarkup(
+            [
                 [
-                    [
-                        InlineKeyboardButton(text="ʏᴇs", callback_data="unpin_yes"),
-                        InlineKeyboardButton(text="ɴᴏ", callback_data="unpin_no"),
-                    ],
-                ]
-            ),
-        )
-
+                    InlineKeyboardButton(text="Yes", callback_data="unpin_yes"),
+                    InlineKeyboardButton(text="No", callback_data="unpin_no"),
+                ],
+            ]
+        ),
+        parse_mode="HTML"
+    )
 
 @app.on_callback_query(filters.regex(r"unpin_(yes|no)"))
 async def callback_query_handler(_, query: CallbackQuery):
     if query.data == "unpin_yes":
         await app.unpin_all_chat_messages(query.message.chat.id)
-        return await query.message.edit_text("Aʟʟ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇs ʜᴀᴠᴇ ʙᴇᴇɴ ᴜɴᴘɪɴɴᴇᴅ.")
+        return await query.message.edit_text("<b>All pinned messages have been unpinned.</b>", parse_mode="HTML")
     elif query.data == "unpin_no":
-        return await query.message.edit_text(
-            "Uɴᴘɪɴ ᴏғ ᴀʟʟ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇs ʜᴀs ʙᴇᴇɴ ᴄᴀɴᴄᴇʟʟᴇᴅ."
-        )
-
+        return await query.message.edit_text("<b>Unpin of all pinned messages has been cancelled.</b>", parse_mode="HTML")
 
 @app.on_message(filters.command(["pin", "unpin"]) & ~filters.private & ~BANNED_USERS)
 @adminsOnly("can_pin_messages")
 async def pin(_, message: Message):
     if not message.reply_to_message:
-        return await message.reply_text("ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴛᴏ ᴘɪɴ/ᴜɴᴘɪɴ ɪᴛ.")
+        return await message.reply_text("<b>Reply to a message to pin/unpin it.</b>", parse_mode="HTML")
     r = message.reply_to_message
     if message.command[0][0] == "u":
         await r.unpin()
         return await message.reply_text(
-            f"ᴜɴᴘɪɴɴᴇᴅ [ᴛʜɪs]({r.link}) ᴍᴇssᴀɢᴇ.",
+            f"<b>Unpinned</b> <a href='{r.link}'>this message</a>.",
             disable_web_page_preview=True,
+            parse_mode="HTML"
         )
     await r.pin(disable_notification=True)
     await message.reply(
-        f"ᴘɪɴɴᴇᴅ [ᴛʜɪs]({r.link}) ᴍᴇssᴀɢᴇ.",
+        f"<b>Pinned</b> <a href='{r.link}'>this message</a>.",
         disable_web_page_preview=True,
+        parse_mode="HTML"
     )
-    msg = "ᴘʟᴇᴀsᴇ ᴄʜᴇᴄᴋ ᴛʜᴇ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ: ~ " + f"[Check, {r.link}]"
+    msg = "Please check the pinned message: ~ " + f"<a href='{r.link}'>Check</a>"
     filter_ = dict(type="text", data=msg)
     await save_filter(message.chat.id, "~pinned", filter_)
-
-
-# Mute members
-
 
 @app.on_message(filters.command(["mute", "tmute"]) & ~filters.private & ~BANNED_USERS)
 @adminsOnly("can_restrict_members")
 async def mute(_, message: Message):
     user_id, reason = await extract_user_and_reason(message)
     if not user_id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ғɪɴᴅ ᴛʜᴀᴛ ᴜsᴇʀ.")
+        return await message.reply_text("<b>I can't find that user.</b>", parse_mode="HTML")
     if user_id == app.id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ᴍᴜᴛᴇ ᴍʏsᴇʟғ.")
+        return await message.reply_text("<b>I can't mute myself.</b>", parse_mode="HTML")
     if user_id in SUDOERS:
-        return await message.reply_text("ʏᴏᴜ ᴡᴀɴɴᴀ ᴍᴜᴛᴇ ᴛʜᴇ ᴇʟᴇᴠᴀᴛᴇᴅ ᴏɴᴇ?, ʀᴇᴄᴏɴsɪᴅᴇʀ!")
+        return await message.reply_text("<b>You wanna mute the elevated one?</b>", parse_mode="HTML")
     if user_id in [
         member.user.id
         async for member in app.get_chat_members(
             chat_id=message.chat.id, filter=ChatMembersFilter.ADMINISTRATORS
         )
     ]:
-        return await message.reply_text(
-            "ɪ ᴄᴀɴ'ᴛ ᴍᴜᴛᴇ ᴀɴ ᴀᴅᴍɪɴ, ʏᴏᴜ ᴋɴᴏᴡ ᴛʜᴇ ʀᴜʟᴇs, sᴏ ᴅᴏ ɪ."
-        )
+        return await message.reply_text("<b>I can't mute an admin</b>", parse_mode="HTML")
     mention = (await app.get_users(user_id)).mention
     keyboard = ikb({"🚨  Unmute  🚨": f"unmute_{user_id}"})
     msg = (
-        f"**ᴍᴜᴛᴇᴅ ᴜsᴇʀ:** {mention}\n"
-        f"**ᴍᴜᴛᴇᴅ ʙʏ:** {message.from_user.mention if message.from_user else 'Anon'}\n"
+        f"<b>Muted User:</b> {mention}\n"
+        f"<b>Muted By:</b> {message.from_user.mention if message.from_user else 'Anon'}\n"
     )
     if message.command[0] == "tmute":
         split = reason.split(None, 1)
         time_value = split[0]
         temp_reason = split[1] if len(split) > 1 else ""
         temp_mute = await time_converter(message, time_value)
-        msg += f"**ᴍᴜᴛᴇᴅ ғᴏʀ:** {time_value}\n"
+        msg += f"<b>Muted For:</b> {time_value}\n"
         if temp_reason:
-            msg += f"**ʀᴇᴀsᴏɴ:** {temp_reason}"
+            msg += f"<b>Reason:</b> {temp_reason}"
         try:
             if len(time_value[:-1]) < 3:
                 await message.chat.restrict_member(
@@ -494,34 +439,32 @@ async def mute(_, message: Message):
                 replied_message = message.reply_to_message
                 if replied_message:
                     message = replied_message
-                await message.reply_text(msg, reply_markup=keyboard)
+                await message.reply_text(msg, reply_markup=keyboard, parse_mode="HTML")
             else:
-                await message.reply_text("ʏᴏᴜ ᴄᴀɴ'ᴛ ᴜsᴇ ᴍᴏʀᴇ ᴛʜᴀɴ 𝟿𝟿")
+                await message.reply_text("<b>You can't use more than 99</b>", parse_mode="HTML")
         except AttributeError:
             pass
         return
     if reason:
-        msg += f"**ʀᴇᴀsᴏɴ:** {reason}"
+        msg += f"<b>Reason:</b> {reason}"
     await message.chat.restrict_member(user_id, permissions=ChatPermissions())
     replied_message = message.reply_to_message
     if replied_message:
         message = replied_message
-    await message.reply_text(msg, reply_markup=keyboard)
-
+    await message.reply_text(msg, reply_markup=keyboard, parse_mode="HTML")
 
 @app.on_message(filters.command("unmute") & ~filters.private & ~BANNED_USERS)
 @adminsOnly("can_restrict_members")
 async def unmute(_, message: Message):
     user_id = await extract_user(message)
     if not user_id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ғɪɴᴅ ᴛʜᴀᴛ ᴜsᴇʀ.")
+        return await message.reply_text("<b>I can't find that user.</b>", parse_mode="HTML")
     await message.chat.unban_member(user_id)
     umention = (await app.get_users(user_id)).mention
     replied_message = message.reply_to_message
     if replied_message:
         message = replied_message
-    await message.reply_text(f"ᴜɴᴍᴜᴛᴇᴅ! {umention}")
-
+    await message.reply_text(f"<b>Unmuted!</b> {umention}", parse_mode="HTML")
 
 @app.on_message(filters.command(["warn", "swarn"]) & ~filters.private & ~BANNED_USERS)
 @adminsOnly("can_restrict_members")
@@ -529,28 +472,24 @@ async def warn_user(_, message: Message):
     user_id, reason = await extract_user_and_reason(message)
     chat_id = message.chat.id
     if not user_id:
-        return await message.reply_text("ɪ ᴄᴀɴᴛ ғɪɴᴅ ᴛʜᴀᴛ ᴜsᴇʀ")
+        return await message.reply_text("<b>I can't find that user</b>", parse_mode="HTML")
     if user_id == app.id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ᴡᴀʀɴ ᴍʏsᴇʟғ, ɪ ᴄᴀɴ ʟᴇᴀᴠᴇ ɪғ ʏᴏᴜ ᴡᴀɴᴛ.")
+        return await message.reply_text("<b>I can't warn myself</b>", parse_mode="HTML")
     if user_id in SUDOERS:
-        return await message.reply_text(
-            "ɪ ᴄᴀɴ'ᴛ ᴡᴀʀɴ ᴍʏ ᴍᴀɴᴀɢᴇʀ's, ʙᴇᴄᴀᴜsᴇ ʜᴇ ᴍᴀɴᴀɢᴇ ᴍᴇ!"
-        )
+        return await message.reply_text("<b>I can't warn my manager's</b>", parse_mode="HTML")
     if user_id in [
         member.user.id
         async for member in app.get_chat_members(
             chat_id=message.chat.id, filter=ChatMembersFilter.ADMINISTRATORS
         )
     ]:
-        return await message.reply_text(
-            "ɪ ᴄᴀɴ'ᴛ ᴡᴀʀɴ ᴀɴ ᴀᴅᴍɪɴ, ʏᴏᴜ ᴋɴᴏᴡ ᴛʜᴇ ʀᴜʟᴇs sᴏ ᴅᴏ ɪ."
-        )
+        return await message.reply_text("<b>I can't warn an admin</b>", parse_mode="HTML")
     user, warns = await asyncio.gather(
         app.get_users(user_id),
         get_warn(chat_id, await int_to_alpha(user_id)),
     )
     mention = user.mention
-    keyboard = ikb({"🚨  ʀᴇᴍᴏᴠᴇ ᴡᴀʀɴ  🚨": f"unwarn_{user_id}"})
+    keyboard = ikb({"🚨  Remove Warn  🚨": f"unwarn_{user_id}"})
     if warns:
         warns = warns["warns"]
     else:
@@ -560,21 +499,20 @@ async def warn_user(_, message: Message):
         await app.delete_user_history(message.chat.id, user_id)
     if warns >= 2:
         await message.chat.ban_member(user_id)
-        await message.reply_text(f"ɴᴜᴍʙᴇʀ ᴏғ ᴡᴀʀɴs ᴏғ {mention} ᴇxᴄᴇᴇᴅᴇᴅ, ʙᴀɴɴᴇᴅ!")
+        await message.reply_text(f"<b>Number of warns of {mention} exceeded, banned!</b>", parse_mode="HTML")
         await remove_warns(chat_id, await int_to_alpha(user_id))
     else:
         warn = {"warns": warns + 1}
         msg = f"""
-**ᴡᴀʀɴᴇᴅ ᴜsᴇʀ:** {mention}
-**ᴡᴀʀɴᴇᴅ ʙʏ:** {message.from_user.mention if message.from_user else 'ᴀɴᴏɴᴍᴏᴜs'}
-**ʀᴇᴀsᴏɴ :** {reason or 'ɴᴏ ʀᴇᴀsᴏɴ ᴘʀᴏᴠᴏᴅᴇᴅ'}
-**ᴡᴀʀɴs:** {warns + 1}/3"""
+<b>Warned User:</b> {mention}
+<b>Warned By:</b> {message.from_user.mention if message.from_user else 'Anonymous'}
+<b>Reason:</b> {reason or 'No reason provided'}
+<b>Warns:</b> {warns + 1}/3"""
         replied_message = message.reply_to_message
         if replied_message:
             message = replied_message
-        await message.reply_text(msg, reply_markup=keyboard)
+        await message.reply_text(msg, reply_markup=keyboard, parse_mode="HTML")
         await add_warn(chat_id, await int_to_alpha(user_id), warn)
-
 
 @app.on_callback_query(filters.regex("unwarn") & ~BANNED_USERS)
 async def remove_warning(_, cq: CallbackQuery):
@@ -584,8 +522,8 @@ async def remove_warning(_, cq: CallbackQuery):
     permission = "can_restrict_members"
     if permission not in permissions:
         return await cq.answer(
-            "ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴇɴᴏᴜɢʜ ᴘᴇʀᴍɪssɪᴏɴs ᴛᴏ ᴘᴇʀғᴏʀᴍ ᴛʜɪs ᴀᴄᴛɪᴏɴ\n"
-            + f"ᴘᴇʀᴍɪssɪᴏɴ ɴᴇᴇᴅᴇᴅ: {permission}",
+            "You don't have enough permissions to perform this action\n"
+            + f"Permission needed: {permission}",
             show_alert=True,
         )
     user_id = cq.data.split("_")[1]
@@ -593,47 +531,44 @@ async def remove_warning(_, cq: CallbackQuery):
     if warns:
         warns = warns["warns"]
     if not warns or warns == 0:
-        return await cq.answer("ᴜsᴇʀ ʜᴀs ɴᴏ ᴡᴀʀɴɪɴɢs.")
+        return await cq.answer("User has no warnings.")
     warn = {"warns": warns - 1}
     await add_warn(chat_id, await int_to_alpha(user_id), warn)
     text = cq.message.text.markdown
     text = f"~~{text}~~\n\n"
-    text += f"__ᴡᴀʀɴ ʀᴇᴍᴏᴠᴇᴅ ʙʏ {from_user.mention}__"
+    text += f"__Warn removed by {from_user.mention}__"
     await cq.message.edit(text)
-
 
 @app.on_message(filters.command("rmwarns") & ~filters.private & ~BANNED_USERS)
 @adminsOnly("can_restrict_members")
 async def remove_warnings(_, message: Message):
     user_id = await extract_user(message)
     if not user_id:
-        return await message.reply_text("I can't find that user.")
+        return await message.reply_text("<b>I can't find that user.</b>", parse_mode="HTML")
     mention = (await app.get_users(user_id)).mention
     chat_id = message.chat.id
     warns = await get_warn(chat_id, await int_to_alpha(user_id))
     if warns:
         warns = warns["warns"]
     if warns == 0 or not warns:
-        await message.reply_text(f"{mention} ʜᴀs ɴᴏ ᴡᴀʀɴɪɴɢs.")
+        await message.reply_text(f"<b>{mention} has no warnings.</b>", parse_mode="HTML")
     else:
         await remove_warns(chat_id, await int_to_alpha(user_id))
-        await message.reply_text(f"ʀᴇᴍᴏᴠᴇᴅ ᴡᴀʀɴɪɴɢs ᴏғ {mention}.")
-
+        await message.reply_text(f"<b>Removed warnings of {mention}.</b>", parse_mode="HTML")
 
 @app.on_message(filters.command("warns") & ~filters.private & ~BANNED_USERS)
 @capture_err
 async def check_warns(_, message: Message):
     user_id = await extract_user(message)
     if not user_id:
-        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ғɪɴᴅ ᴛʜᴀᴛ ᴜsᴇʀ.")
+        return await message.reply_text("<b>I can't find that user.</b>", parse_mode="HTML")
     warns = await get_warn(message.chat.id, await int_to_alpha(user_id))
     mention = (await app.get_users(user_id)).mention
     if warns:
         warns = warns["warns"]
     else:
-        return await message.reply_text(f"{mention} ʜᴀs ɴᴏ ᴡᴀʀɴɪɴɢs.")
-    return await message.reply_text(f"{mention} ʜᴀs {warns}/3 ᴡᴀʀɴɪɴɢs")
-
+        return await message.reply_text(f"<b>{mention} has no warnings.</b>", parse_mode="HTML")
+    return await message.reply_text(f"<b>{mention} has {warns}/3 warnings</b>", parse_mode="HTML")
 
 from pyrogram import filters
 from ShrutiMusic import app
@@ -647,13 +582,14 @@ async def ban_members(chat_id, user_id, bot_permission, total_members, msg):
     banned_count = 0
     failed_count = 0
     ok = await msg.reply_text(
-        f"ᴛᴏᴛᴀʟ ᴍᴇᴍʙᴇʀs ғᴏᴜɴᴅ: {total_members}\n**sᴛᴀʀᴛᴇᴅ ʙᴀɴɴɪɴɢ..**"
+        f"<b>Total members found:</b> {total_members}\n<b>Started banning...</b>",
+        parse_mode="HTML"
     )
     
     while failed_count <= 30:
         async for member in app.get_chat_members(chat_id):
             if failed_count > 30:
-                break  # Stop if failed bans exceed 30
+                break
             
             try:
                 if member.user.id != user_id and member.user.id not in SUDOERS:
@@ -663,28 +599,29 @@ async def ban_members(chat_id, user_id, bot_permission, total_members, msg):
                     if banned_count % 5 == 0:
                         try:
                             await ok.edit_text(
-                                f"ʙᴀɴɴᴇᴅ {banned_count} ᴍᴇᴍʙᴇʀs ᴏᴜᴛ ᴏғ {total_members}"
+                                f"<b>Banned {banned_count} members out of {total_members}</b>",
+                                parse_mode="HTML"
                             )
                         except Exception:
-                            pass  # Ignore if edit fails
+                            pass
 
             except FloodWait as e:
-                await asyncio.sleep(e.x)  # Wait for the flood time and continue
+                await asyncio.sleep(e.x)
             except Exception:
                 failed_count += 1
 
         if failed_count <= 30:
-            await asyncio.sleep(5)  # Retry every 5 seconds if failed bans are within the limit
+            await asyncio.sleep(5)
     
     await ok.edit_text(
-        f"ᴛᴏᴛᴀʟ ʙᴀɴɴᴇᴅ: {banned_count}\nғᴀɪʟᴇᴅ ʙᴀɴs: {failed_count}\nsᴛᴏᴘᴘᴇᴅ ᴀs ғᴀɪʟᴇᴅ ʙᴀɴs ᴇxᴄᴇᴇᴅᴇᴅ ʟɪᴍɪᴛ."
+        f"<b>Total banned:</b> {banned_count}\n<b>Failed bans:</b> {failed_count}\n<b>Stopped as failed bans exceeded limit.</b>",
+        parse_mode="HTML"
     )
-
 
 @app.on_message(filters.command("banall") & SUDOERS)
 async def ban_all(_, msg):
     chat_id = msg.chat.id
-    user_id = msg.from_user.id  # ID of the user who issued the command
+    user_id = msg.from_user.id
     
     bot = await app.get_chat_member(chat_id, BOT_ID)
     bot_permission = bot.privileges.can_restrict_members
@@ -698,53 +635,45 @@ async def ban_all(_, msg):
     
     else:
         await msg.reply_text(
-            "ᴇɪᴛʜᴇʀ ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴛʜᴇ ʀɪɢʜᴛ ᴛᴏ ʀᴇsᴛʀɪᴄᴛ ᴜsᴇʀs ᴏʀ ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ɪɴ sᴜᴅᴏ ᴜsᴇʀs"
+            "<b>Either I don't have the right to restrict users or you are not in sudo users</b>",
+            parse_mode="HTML"
         )
-
-
-
-from pyrogram import Client, filters
-from pyrogram.errors import UserNotParticipant, ChatAdminRequired, UserAlreadyParticipant, InviteHashExpired
-
-# Create a bot instance
-from ShrutiMusic import app 
 
 @app.on_message(filters.command("unbanme"))
 async def unbanme(client, message):
     try:
-        # Check if the command has a group ID argument
         if len(message.command) < 2:
-            await message.reply_text("ᴘʟᴇᴀsᴇ ᴘʀᴏᴠɪᴅᴇ ᴛʜᴇ ɢʀᴏᴜᴘ ɪᴅ.")
-            return
+            return await message.reply_text("<b>Please provide the group ID.</b>", parse_mode="HTML")
 
         group_id = message.command[1]
 
         try:
-            # Try to unban the user from the group
             await client.unban_chat_member(group_id, message.from_user.id)
             
-            # Check if the user is already a participant in the group
             try:
                 member = await client.get_chat_member(group_id, message.from_user.id)
                 if member.status == "member":
-                    await message.reply_text(f"ʏᴏᴜ ᴀʀᴇ ᴀʟʀᴇᴀᴅʏ ᴜɴʙᴀɴɴᴇᴅ ɪɴ ᴛʜᴀᴛ ɢʀᴏᴜᴘ. ʏᴏᴜ ᴄᴀɴ ᴊᴏɪɴ ɴᴏᴡ ʙʏ ᴄʟɪᴄᴋɪɴɢ ʜᴇʀᴇ: {await get_group_link(client, group_id)}")
-                    return
+                    return await message.reply_text(
+                        f"<b>You are already unbanned in that group.</b> You can join now by clicking here: {await get_group_link(client, group_id)}",
+                        parse_mode="HTML"
+                    )
             except UserNotParticipant:
-                pass  # The user is not a participant, proceed to unban
+                pass
 
-            # Send unban success message
             try:
                 group_link = await get_group_link(client, group_id)
-                await message.reply_text(f"ɪ ᴜɴʙᴀɴɴᴇᴅ ʏᴏᴜ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ. ʏᴏᴜ ᴄᴀɴ ᴊᴏɪɴ ɴᴏᴡ ʙʏ ᴄʟɪᴄᴋɪɴɢ ʜᴇʀᴇ: {group_link}")
+                await message.reply_text(
+                    f"<b>I unbanned you in the group.</b> You can join now by clicking here: {group_link}",
+                    parse_mode="HTML"
+                )
             except InviteHashExpired:
-                await message.reply_text(f"ɪ ᴜɴʙᴀɴɴᴇᴅ ʏᴏᴜ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ, ʙᴜᴛ ɪ ᴄᴏᴜʟᴅɴ'ᴛ ᴘʀᴏᴠɪᴅᴇ ᴀ ʟɪɴᴋ ᴛᴏ ᴛʜᴇ ɢʀᴏᴜᴘ.")
+                await message.reply_text("<b>I unbanned you in the group, but I couldn't provide a link to the group.</b>", parse_mode="HTML")
         except ChatAdminRequired:
-            await message.reply_text("ɪ ᴀᴍ ɴᴏᴛ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜᴀᴛ ɢʀᴏᴜᴘ, sᴏ ɪ ᴄᴀɴɴᴏᴛ ᴜɴʙᴀɴ ʏᴏᴜ.")
+            await message.reply_text("<b>I am not an admin in that group, so I cannot unban you.</b>", parse_mode="HTML")
     except Exception as e:
-        await message.reply_text(f"ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ: {e}")
+        await message.reply_text(f"<b>An error occurred:</b> {e}", parse_mode="HTML")
 
 async def get_group_link(client, group_id):
-    # Try to get the group link or username
     chat = await client.get_chat(group_id)
     if chat.username:
         return f"https://t.me/{chat.username}"
