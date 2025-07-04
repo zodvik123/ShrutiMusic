@@ -173,7 +173,7 @@ HELP_17 = """
 𝐌𝐨𝐫𝐞 𝐂𝐨𝐦𝐦𝐚𝐧𝐝𝐬 𝐔𝐩𝐝𝐚𝐭𝐞𝐝 𝐒𝐨𝐨𝐧..
 """
 
-HELP_17 = """
+HELP_18 = """
 <b><u>ᴀᴅᴍɪɴ ᴄᴏᴍᴍᴀɴᴅs</b></u>
 /ban - Ban A User
 /banall - Ban All Users
