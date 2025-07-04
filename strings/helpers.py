@@ -169,6 +169,6 @@ HELP_17 = """
 /basket ᴏʀ /basketball : Pʟᴀʏs ʙᴀsᴋᴇᴛʙᴀʟʟ.
 /football : Pʟᴀʏs ғᴏᴏᴛʙᴀʟʟ.
 /slot ᴏʀ /jackpot : Pʟᴀʏs ᴊᴀᴄᴋᴘᴏᴛ.
-/ bowling : Pʟᴀʏs ʙᴏᴡʟɪɴɢ.
+/bowling : Pʟᴀʏs ʙᴏᴡʟɪɴɢ.
 𝐌𝐨𝐫𝐞 𝐂𝐨𝐦𝐦𝐚𝐧𝐝𝐬 𝐔𝐩𝐝𝐚𝐭𝐞𝐝 𝐒𝐨𝐨𝐧..
 """
