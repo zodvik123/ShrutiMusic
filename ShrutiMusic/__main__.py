@@ -92,12 +92,12 @@ async def setup_bot_commands():
         await app.set_bot_commands(COMMANDS)
         LOGGER("ShrutiMusic").info("Bot commands set successfully!")
         
-        # Set bot bio
-        await app.set_chat_description(chat_id="me", description=BOT_BIO)
+        # Set bot bio (short description)
+        await app.set_my_short_description(short_description=BOT_BIO)
         LOGGER("ShrutiMusic").info("Bot bio set successfully!")
         
-        # Set bot about
-        await app.set_chat_description(chat_id="me", description=BOT_ABOUT)
+        # Set bot about (description)
+        await app.set_my_description(description=BOT_ABOUT)
         LOGGER("ShrutiMusic").info("Bot about set successfully!")
         
     except Exception as e:
@@ -159,7 +159,7 @@ async def init():
 
     await app.stop()
     await userbot.stop()
-    LOGGER("ShrutiMusic").info("Stopping Shruti Music Bot...")
+    LOGGER("ShrutiMusic").info("Stopping Shruti Music Bot...🥺")
 
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(init())
