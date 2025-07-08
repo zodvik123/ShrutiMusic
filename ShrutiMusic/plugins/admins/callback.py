@@ -39,7 +39,7 @@ import config
 checker = {}
 upvoters = {}
 
-
+from config import SUPPORT_GROUP
 @app.on_callback_query(filters.regex("help_page_1"))
 async def show_help_page1(client, callback_query: CallbackQuery):
     try:
