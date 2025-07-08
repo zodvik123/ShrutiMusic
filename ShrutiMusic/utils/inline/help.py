@@ -72,7 +72,7 @@ def help_back_markup(_):
             [
                 InlineKeyboardButton(
                     text=_["BACK_BUTTON"],
-                    callback_data="settings_back_helper",
+                    callback_data="help_page_1",
                 ),
             ]
         ]
