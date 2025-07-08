@@ -151,18 +151,14 @@ HELP_15 = """
 """
 
 HELP_16 = """
-<b><u>Privacy Command :</b></u>
+<b><u>ᴘʀɪᴠᴀᴄʏ ᴘᴏʟɪᴄʏ:</b></u>
 
 /Privacy : Display the privacy statement for Sarcastic Bot 
 """
 
 HELP_17 = """
-<b><u>ᴇxᴛʀᴀ ғᴇᴀᴛᴜʀᴇs</b></u>
+<b><u>ɢᴀᴍᴇs</b></u>
 
-/tagall [ʏᴏᴜʀ ᴍᴇssᴀɢᴇ ᴏʀ ʀᴇᴘʟʏ ᴏɴ ᴀɴʏ ᴄʜᴀᴛ] : ᴛᴀɢ ᴀʟʟ ᴜsᴇʀs.
-/admins [ʏᴏᴜʀ ᴍᴇssᴀɢᴇ ᴏʀ ʀᴇᴘʟʏ ᴏɴ ᴀɴʏ ᴄʜᴀᴛ] : ᴛᴀɢ ᴀʟʟ ᴀᴅᴍɪɴs.
-/tgm : ᴄᴏɴᴠᴇʀᴛ ɪᴍᴀɢᴇ ɪɴ ᴜʀʟ.
-/vid : ᴅᴏᴡɴʟᴏᴀᴅ ᴀɴʏ ɪɴsᴛᴀ ᴛᴡɪᴛᴛᴇʀ ᴀɴᴅ ᴍᴏʀᴇ ᴘʟᴀᴛғᴏʀᴍs ᴠɪᴅᴇᴏ.
 /dice : Rᴏʟʟs ᴀ ᴅɪᴄᴇ.
 /ludo : Pʟᴀʏ Lᴜᴅᴏ.
 /dart : Tʜʀᴏᴡs ᴀ ᴅᴀʀᴛ.
@@ -170,7 +166,6 @@ HELP_17 = """
 /football : Pʟᴀʏs ғᴏᴏᴛʙᴀʟʟ.
 /slot ᴏʀ /jackpot : Pʟᴀʏs ᴊᴀᴄᴋᴘᴏᴛ.
 /bowling : Pʟᴀʏs ʙᴏᴡʟɪɴɢ.
-𝐌𝐨𝐫𝐞 𝐂𝐨𝐦𝐦𝐚𝐧𝐝𝐬 𝐔𝐩𝐝𝐚𝐭𝐞𝐝 𝐒𝐨𝐨𝐧..
 """
 
 HELP_18 = """
@@ -200,4 +195,23 @@ HELP_18 = """
 /unmute - Unmute A User
 /zombies - Ban Deleted Accounts
 /report | @admins | @admin - Report A Message To Admins.
+"""
+
+HELP_19 = """
+<b><u>ɪᴍᴀɢᴇ ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴏʀ:</b></u>
+
+/tgm : ʀᴇᴘʟʏ ᴛᴏ ᴀɴ ᴀɴʏ ɪᴍᴀɢᴇ,ᴠɪᴅᴇᴏ ᴏʀ ɢɪғ
+"""
+
+HELP_20 = """
+<b><u>ᴛᴀɢ ᴄᴏᴍᴍᴀɴᴅs:</b></u>
+
+/tagall [ʏᴏᴜʀ ᴍᴇssᴀɢᴇ ᴏʀ ʀᴇᴘʟʏ ᴏɴ ᴀɴʏ ᴄʜᴀᴛ] : ᴛᴀɢ ᴀʟʟ ᴜsᴇʀs.
+/admins [ʏᴏᴜʀ ᴍᴇssᴀɢᴇ ᴏʀ ʀᴇᴘʟʏ ᴏɴ ᴀɴʏ ᴄʜᴀᴛ] : ᴛᴀɢ ᴀʟʟ ᴀᴅᴍɪɴs.
+"""
+
+HELP_21 = """
+<b><u>ᴅᴏᴡɴʟᴏᴀᴅ ᴠɪᴅᴇᴏs:</b></u>
+
+/vid : ᴅᴏᴡɴʟᴏᴀᴅ ᴀɴʏ ɪɴsᴛᴀ ᴛᴡɪᴛᴛᴇʀ ᴀɴᴅ ᴍᴏʀᴇ ᴘʟᴀᴛғᴏʀᴍs ᴠɪᴅᴇᴏ.
 """
