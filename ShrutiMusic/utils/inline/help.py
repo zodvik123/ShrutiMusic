@@ -27,10 +27,13 @@ def help_pannel_page1(_, START: Union[bool, int] = None):
                 InlineKeyboardButton(text=_["H_B_10"], callback_data="help_callback hb10"),
             ],
             [
-                InlineKeyboardButton(text="➡️ 𝐍ᴇxᴛ", callback_data="help_page_2"),
                 InlineKeyboardButton(
-                    text=_["BACK_BUTTON"] if START else _["CLOSE_BUTTON"],
+                    text="🏠 Hᴏᴍᴇ",
                     callback_data="settingsback_helper" if START else "close",
+                ),
+                InlineKeyboardButton(
+                    text="➡️ Nᴇxᴛ",
+                    callback_data="help_page_2",
                 ),
             ],
         ]
@@ -56,10 +59,13 @@ def help_pannel_page2(_, START: Union[bool, int] = None):
                 InlineKeyboardButton(text=_["H_B_18"], callback_data="help_callback hb18"),
             ],
             [
-                InlineKeyboardButton(text="⬅️ 𝐁ᴀᴄᴋ", callback_data="help_page_1"),
                 InlineKeyboardButton(
-                    text=_["BACK_BUTTON"] if START else _["CLOSE_BUTTON"],
+                    text="🏠 Hᴏᴍᴇ",
                     callback_data="settingsback_helper" if START else "close",
+                ),
+                InlineKeyboardButton(
+                    text="➡️ Nᴇxᴛ",
+                    callback_data="help_page_1",
                 ),
             ],
         ]
@@ -71,7 +77,7 @@ def help_back_markup(_):
         [
             [
                 InlineKeyboardButton(
-                    text=_["BACK_BUTTON"],
+                    text="🏠 Hᴏᴍᴇ",
                     callback_data="settings_back_helper",
                 ),
             ]
