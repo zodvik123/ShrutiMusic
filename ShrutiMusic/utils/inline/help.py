@@ -66,14 +66,14 @@ def help_pannel_page2(_, START: Union[bool, int] = None):
     )
 
 
-def help_back_markup(_):
+def help_back_markup(_, page: int = 1):
     return InlineKeyboardMarkup(
         [
             [
                 InlineKeyboardButton(
                     text=_["BACK_BUTTON"],
-                    callback_data="help_page_1",
-                ),
+                    callback_data=f"help_page_{page}",
+                )
             ]
         ]
     )
