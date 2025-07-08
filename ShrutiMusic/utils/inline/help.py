@@ -2,14 +2,9 @@ from typing import Union
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from ShrutiMusic import app
 
-def help_pannel(_, START: Union[bool, int] = None):
-    # Decide text and callback based on START flag
-    back_or_close_btn = InlineKeyboardButton(
-        text=_["BACK_BUTTON"] if START else _["CLOSE_BUTTON"],
-        callback_data="settingsback_helper" if START else "close"
-    )
 
-    upl = InlineKeyboardMarkup(
+def help_pannel_page1(_, START: Union[bool, int] = None):
+    return InlineKeyboardMarkup(
         [
             [
                 InlineKeyboardButton(text=_["H_B_1"], callback_data="help_callback hb1"),
@@ -32,6 +27,22 @@ def help_pannel(_, START: Union[bool, int] = None):
                 InlineKeyboardButton(text=_["H_B_10"], callback_data="help_callback hb10"),
             ],
             [
+                InlineKeyboardButton(text="➡️ Next", callback_data="help_page_2"),
+            ],
+            [
+                InlineKeyboardButton(
+                    text=_["BACK_BUTTON"] if START else _["CLOSE_BUTTON"],
+                    callback_data="settingsback_helper" if START else "close",
+                ),
+            ],
+        ]
+    )
+
+
+def help_pannel_page2(_, START: Union[bool, int] = None):
+    return InlineKeyboardMarkup(
+        [
+            [
                 InlineKeyboardButton(text=_["H_B_11"], callback_data="help_callback hb11"),
                 InlineKeyboardButton(text=_["H_B_12"], callback_data="help_callback hb12"),
             ],
@@ -45,11 +56,18 @@ def help_pannel(_, START: Union[bool, int] = None):
             ],
             [
                 InlineKeyboardButton(text=_["H_B_18"], callback_data="help_callback hb18"),
-                back_or_close_btn
+            ],
+            [
+                InlineKeyboardButton(text="⬅️ Back", callback_data="help_page_1"),
+            ],
+            [
+                InlineKeyboardButton(
+                    text=_["BACK_BUTTON"] if START else _["CLOSE_BUTTON"],
+                    callback_data="settingsback_helper" if START else "close",
+                ),
             ],
         ]
     )
-    return upl
 
 
 def help_back_markup(_):
