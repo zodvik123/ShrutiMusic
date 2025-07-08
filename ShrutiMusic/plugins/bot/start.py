@@ -20,7 +20,7 @@ from ShrutiMusic.utils.database import (
 from ShrutiMusic.utils import bot_sys_stats
 from ShrutiMusic.utils.decorators.language import LanguageStart
 from ShrutiMusic.utils.formatters import get_readable_time
-from ShrutiMusic.utils.inline import help_pannel, private_panel, start_panel
+from ShrutiMusic.utils.inline import help_pannel_page1, private_panel, start_panel
 from config import BANNED_USERS
 from strings import get_string
 
