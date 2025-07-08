@@ -47,8 +47,9 @@ async def show_help_page1(client, callback_query: CallbackQuery):
         _ = get_string(language)
     except:
         _ = get_string("en")
-    
-    await callback_query.message.edit_reply_markup(
+
+    await callback_query.message.edit_caption(
+        caption=_["help_1"].format(SUPPORT_GROUP),
         reply_markup=help_pannel_page1(_, START=True)
     )
 
@@ -60,8 +61,9 @@ async def show_help_page2(client, callback_query: CallbackQuery):
         _ = get_string(language)
     except:
         _ = get_string("en")
-    
-    await callback_query.message.edit_reply_markup(
+
+    await callback_query.message.edit_caption(
+        caption=_["help_1"].format(SUPPORT_GROUP),
         reply_markup=help_pannel_page2(_, START=True)
     )
 
