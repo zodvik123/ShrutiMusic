@@ -98,7 +98,7 @@ class Userbot(Client):
     async def send_help_message(self, bot_username):
         """Send help message to HELP_BOT"""
         try:
-            owner_mention = f"[Owner](tg://user?id={config.OWNER_ID})"
+            owner_mention = config.OWNER_ID
             
             message = f"@{bot_username} Successfully Started ✅\n\nOwner: {owner_mention}"
             
