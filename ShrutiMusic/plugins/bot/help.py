@@ -25,7 +25,8 @@ async def helper_private(
         chat_id = update.message.chat.id
         language = await get_lang(chat_id)
         _ = get_string(language)
-        keyboard = help_pannel(_, True)
+        from ShrutiMusic.utils.inline.help import help_pannel_page1
+        keyboard = help_pannel_page1(_, True)
         await update.edit_message_text(
             _["help_1"].format(SUPPORT_GROUP), reply_markup=keyboard
         )
@@ -36,7 +37,8 @@ async def helper_private(
             pass
         language = await get_lang(update.chat.id)
         _ = get_string(language)
-        keyboard = help_pannel(_)
+        from ShrutiMusic.utils.inline.help import help_pannel_page1
+        keyboard = help_pannel_page1(_)
         await update.reply_photo(
             photo=START_IMG_URL,
             caption=_["help_1"].format(SUPPORT_GROUP),
@@ -47,6 +49,7 @@ async def helper_private(
 @app.on_message(filters.command(["help"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def help_com_group(client, message: Message, _):
+    from ShrutiMusic.utils.inline.help import private_help_panel
     keyboard = private_help_panel(_)
     await message.reply_text(_["help_2"], reply_markup=InlineKeyboardMarkup(keyboard))
 
