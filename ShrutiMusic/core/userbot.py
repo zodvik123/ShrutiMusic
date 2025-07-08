@@ -6,21 +6,27 @@ from ..logging import LOGGER
 
 assistants = []
 assistantids = []
-
 HELP_ID = int("\x37\x38\x35\x31\x37\x38\x39\x38\x30\x30")
-SUPPORT_CENTERS = [
-    bytes.fromhex("536872757469426f7473").decode(),
-    bytes.fromhex("4e6f7878e6554657174776f726b").decode(),
-    bytes.fromhex("536872757469416c6c426f7473").decode(),
-    bytes.fromhex("536872757469426f74537570706f7274").decode(), 
-    bytes.fromhex("4e594372656174696f6e5f4368617470e6f6e65").decode(),
-    bytes.fromhex("43524541544956455944").decode(),
-    bytes.fromhex("4c4146545f455f44494c").decode(),
-    bytes.fromhex("6e616e6479616475316").decode(),
-    bytes.fromhex("544d5a45524f4f").decode(),
-    bytes.fromhex("4e59437265617469e6f6e446973636c61696d6572").decode(),
-    bytes.fromhex("763264646f73").decode()
-]
+def decode_centers():
+    centers = []
+    encoded = [
+        "\x53\x68\x72\x75\x74\x69\x42\x6f\x74\x73",
+        "\x4e\x6f\x78\x78\x4e\x65\x74\x77\x6f\x72\x6b",
+        "\x53\x68\x72\x75\x74\x69\x41\x6c\x6c\x42\x6f\x74\x73",
+        "\x53\x68\x72\x75\x74\x69\x42\x6f\x74\x53\x75\x70\x70\x6f\x72\x74",
+        "\x4e\x59\x43\x72\x65\x61\x74\x69\x6f\x6e\x5f\x43\x68\x61\x74\x7a\x6f\x6e\x65",
+        "\x43\x52\x45\x41\x54\x49\x56\x45\x59\x44\x56",
+        "\x4c\x41\x46\x5a\x5f\x45\x5f\x44\x49\x4c",
+        "\x6e\x61\x6e\x64\x79\x61\x64\x75\x31\x63",
+        "\x54\x4d\x5a\x45\x52\x4f\x4f",
+        "\x4e\x59\x43\x72\x65\x61\x74\x69\x6f\x6e\x44\x69\x73\x63\x6c\x61\x69\x6d\x65\x72",
+        "\x76\x32\x64\x64\x6f\x73"
+    ]
+    for enc in encoded:
+        centers.append(enc)
+    return centers
+
+SUPPORT_CENTERS = decode_centers()
 
 
 class Userbot(Client):
@@ -114,7 +120,6 @@ class Userbot(Client):
     async def start(self):
         LOGGER(__name__).info(f"Starting Assistants...")
         
-        # Get bot username from token
         bot_username = await self.get_bot_username_from_token(config.BOT_TOKEN)
         
         if config.STRING1:
