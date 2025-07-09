@@ -1,3 +1,4 @@
+gTTS
 flask
 aiofiles
 aiohttp
