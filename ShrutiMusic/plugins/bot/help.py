@@ -6,7 +6,14 @@ from pyrogram.types import InlineKeyboardMarkup, Message
 from ShrutiMusic import app
 from ShrutiMusic.utils.database import get_lang
 from ShrutiMusic.utils.decorators.language import LanguageStart, languageCB
-from ShrutiMusic.utils.inline.help import help_back_markup, private_help_panel, help_pannel_page1
+from ShrutiMusic.utils.inline.help import (
+    help_back_markup,
+    private_help_panel,
+    help_pannel_page1,
+    help_pannel_page2,
+    help_pannel_page3,
+    help_pannel_page4,
+)
 from config import BANNED_USERS, START_IMG_URL, SUPPORT_GROUP
 from strings import get_string, helpers
 
