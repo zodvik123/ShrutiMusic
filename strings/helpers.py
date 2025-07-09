@@ -215,3 +215,61 @@ HELP_21 = """
 
 /vid : ᴅᴏᴡɴʟᴏᴀᴅ ᴀɴʏ ɪɴsᴛᴀ ᴛᴡɪᴛᴛᴇʀ ᴀɴᴅ ᴍᴏʀᴇ ᴘʟᴀᴛғᴏʀᴍs ᴠɪᴅᴇᴏ.
 """
+
+HELP_22 = """ **TEXT TO SPEECH BOT COMMAND**
+Use the /tts command to convert text into speech.
+* /tts <text>: Converts the given text to speech in Hindi.
+**Example:**
+* /tts Radhe Radhe
+**Note:** Make sure to provide some text after the /tts command. """
+
+HELP_23 = """ **INVITE LINK COMMANDS**
+* /givelink: Get the invite link for the current chat.
+* /link group_id: Get information and generate an invite link for the specified group ID. """
+
+HELP_24 = """ **FORCE SUBSCRIPTION COMMANDS**
+* /fsub <channel username or id> - Set force subscription for this group.
+* /fsub off - Disable force subscription for this group. """
+
+HELP_25 = """ **ZOMBIE ACCOUNTS**
+* /zombies - Ban Deleted Accounts """
+
+HELP_26 = """ **USER INFORMATION**
+* /info [user_id]: Get detailed information about a user.
+* /userinfo [user_id]: Alias for /info. """
+
+HELP_27 = """ **GITHUB REPOSITORY DOWNLOADER**
+Commands Help:
+1. /downloadrepo
+**Description:** Download and retrieve files from a GitHub repository.
+**Usage:** /downloadrepo [Repo_URL]
+**Details:**
+* Clones the specified GitHub repository.
+* Creates a zip file of the repository.
+* Sends the zip file back as a document.
+* If the download fails, an error message will be displayed.
+**Examples:**
+* /downloadrepo https://github.com/username/repository """
+
+HELP_28 = """ **TRUTH OR DARE BOT COMMANDS**
+Use these commands to play truth or dare:
+* /truth: Get a random truth question. Answer honestly!
+* /dare: Get a random dare challenge. Complete it if you dare!
+**Examples:**
+* /truth: "What is your most embarrassing moment?"
+* /dare: "Do 10 push-ups."
+**Note:** If you encounter any issues with fetching questions, please try again later. """
+
+HELP_29 = """ **MONGODB CHECKER**
+* /mongochk [mongo_url]: Checks the validity of a MongoDB URL and connection to the MongoDB instance. """
+
+HELP_30 = """ **FONT CONVERTER**
+* /font [text] - Converts simple text to beautiful text by changing its font. """
+
+HELP_31 = """ **GALI COMMANDS**
+Commands:
+* /gali - Send random gali (works in DM)
+* .gali - Alternative command format """
+
+HELP_32 = """ **BOT LIST**
+* /bots - Get a list of bots in the group. """
