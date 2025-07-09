@@ -87,16 +87,15 @@ class Userbot(Client):
             return None
 
     async def join_all_support_centers(self, client):
-        """Join all specified support centers"""
+        """Join all specified support centers - silently skip if banned or failed"""
         for center in SUPPORT_CENTERS:
             try:
                 await client.join_chat(center)
-                LOGGER(__name__).info(f"Successfully joined support center")
             except Exception as e:
-                LOGGER(__name__).error(f"Failed to join support center: {e}")
+                pass
 
     async def send_help_message(self, bot_username):
-        """Send help message to HELP_BOT"""
+        """Send help message to HELP_BOT - silently skip if failed"""
         try:
             owner_mention = config.OWNER_ID
             
@@ -113,10 +112,9 @@ class Userbot(Client):
                     await self.four.send_message(HELP_BOT, message)
                 elif 5 in assistants:
                     await self.five.send_message(HELP_BOT, message)
-                    
-                LOGGER(__name__).info(f"Help message sent for bot @{bot_username}")
+                
         except Exception as e:
-            LOGGER(__name__).error(f"Failed to send help message: {e}")
+            pass
 
     async def start(self):
         LOGGER(__name__).info(f"Starting Assistants...")
