@@ -79,7 +79,7 @@ async def join_watcher(_, message):
 
 
 from pyrogram.types import Message
-from ChampuMusic.utils.database import delete_served_chat, get_assistant
+from ShrutiMusic.utils.database import delete_served_chat, get_assistant
 
 photo = [
     "https://telegra.ph/file/1949480f01355b4e87d26.jpg",
