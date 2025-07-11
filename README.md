@@ -105,7 +105,6 @@ pip3 install -U -r requirements.txt
 Copy example config file and edit it with your values:
 
 ```bash
-cp sample.env .env
 nano .env
 ```
 
