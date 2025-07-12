@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://files.catbox.moe/eehxb4.jpg" alt="ShrutiMusicBot Logo" width="500px">
+  <img src="https://raw.githubusercontent.com/NoxxOP/ShrutiMusic/main/ShrutiMusic/assets/ShrutiBots.jpg" alt="ShrutiMusicBot Logo" width="500px">
 </p>
 
 <h1 align="center">🎵 Shruti Music Bot 🎵</h1>
