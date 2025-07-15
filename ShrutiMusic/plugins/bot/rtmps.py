@@ -112,6 +112,18 @@ async def start_live_command(client, message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
     
+    # Check if bot is in voice chat
+    try:
+        from ShrutiMusic.core.call import Shruti
+        if chat_id not in Shruti.active_calls:
+            await message.reply_text(
+                "❌ <b>Bot isn't streaming on voice chat!</b>\n"
+                "Please start a voice chat session first using <code>/play</code> command."
+            )
+            return
+    except Exception as e:
+        logger.warning(f"Could not check voice chat status: {e}")
+    
     # Check if already streaming
     if stream_manager.is_streaming(chat_id):
         await message.reply_text(
@@ -148,7 +160,8 @@ async def start_live_command(client, message: Message):
         "📝 <b>Examples:</b>\n"
         "• <code>@your_channel</code>\n"
         "• <code>-1001234567890</code>\n"
-        "• <code>your_group_username</code>",
+        "• <code>your_group_username</code>\n\n"
+        "💡 <b>Note:</b> Bot must be admin in the target channel/group",
         reply_markup=keyboard
     )
 
@@ -229,6 +242,18 @@ async def start_live_stream(client, message: Message, session: Dict):
         channel = session['data']['channel']
         server_url = session['data']['server_url']
         stream_key = session['data']['stream_key']
+        
+        # Validate bot is still in voice chat
+        try:
+            from ShrutiMusic.core.call import Shruti
+            if chat_id not in Shruti.active_calls:
+                await message.reply_text(
+                    "❌ <b>Bot is no longer in voice chat!</b>\n"
+                    "Please rejoin voice chat and try again."
+                )
+                return
+        except Exception as e:
+            logger.warning(f"Could not verify voice chat status: {e}")
         
         # Send processing message
         status_msg = await message.reply_text(
@@ -361,6 +386,31 @@ async def live_status_command(client, message: Message):
         )
 
 # Cleanup function for app shutdown
+@app.on_message(filters.command("vcstatus"))
+@AdminRightsCheck
+async def voice_chat_status(client, message: Message):
+    """Check voice chat status"""
+    chat_id = message.chat.id
+    
+    try:
+        from ShrutiMusic.core.call import Shruti
+        if chat_id in Shruti.active_calls:
+            await message.reply_text(
+                "🟢 <b>Voice Chat Status</b>\n\n"
+                "✅ Bot is connected to voice chat\n"
+                "🎵 Ready for live streaming"
+            )
+        else:
+            await message.reply_text(
+                "🔴 <b>Voice Chat Status</b>\n\n"
+                "❌ Bot is not in voice chat\n"
+                "💡 Use <code>/play</code> to join voice chat first"
+            )
+    except Exception as e:
+        await message.reply_text(
+            "⚠️ <b>Could not check voice chat status</b>\n"
+            f"Error: <code>{str(e)}</code>"
+        )
 async def cleanup_streams():
     """Cleanup all active streams on shutdown"""
     for chat_id in list(stream_manager.active_streams.keys()):
