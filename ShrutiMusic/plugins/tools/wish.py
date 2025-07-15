@@ -86,10 +86,12 @@ async def tag_users(chat_id, messages, tag_type):
             break
             
         batch = users[i:i+5]
+        # Create proper mentions - this will show as clickable names
         mentions = " ".join([f"[{u.first_name}](tg://user?id={u.id})" for u in batch])
         msg = random.choice(messages).format(mention=mentions)
         
-        await app.send_message(chat_id, msg, disable_web_page_preview=True, parse_mode=None)
+        # Use parse_mode="markdown" to properly format the mentions
+        await app.send_message(chat_id, msg, disable_web_page_preview=True, parse_mode="markdown")
         await asyncio.sleep(2)
     
     # Clean up and send completion message
