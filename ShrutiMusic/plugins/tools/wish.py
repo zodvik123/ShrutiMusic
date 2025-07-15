@@ -2,6 +2,7 @@ import asyncio
 import random
 from pyrogram import filters
 from pyrogram.types import Message
+from pyrogram import enums
 from ShrutiMusic import app
 
 # Global dictionary to track active chats for all tagging types
@@ -90,8 +91,8 @@ async def tag_users(chat_id, messages, tag_type):
         mentions = " ".join([f"[{u.first_name}](tg://user?id={u.id})" for u in batch])
         msg = random.choice(messages).format(mention=mentions)
         
-        # Use parse_mode="markdown" to properly format the mentions
-        await app.send_message(chat_id, msg, disable_web_page_preview=True, parse_mode="markdown")
+        # Use parse_mode=enums.ParseMode.MARKDOWN to properly format the mentions
+        await app.send_message(chat_id, msg, disable_web_page_preview=True, parse_mode=enums.ParseMode.MARKDOWN)
         await asyncio.sleep(2)
     
     # Clean up and send completion message
