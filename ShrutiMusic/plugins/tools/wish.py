@@ -9,60 +9,60 @@ active_chats = {}
 
 # Message templates for different times of day
 GM_MESSAGES = [
-    "🌞 Gᴏᴏᴅ Mᴏʀɴɪɴɢ 🌼 {mention}",
-    "☕ Rise and Shine, {mention}!",
-    "🌄 Sᴜʀᴀᴊ Nɪᴋʜʀᴀ, Tᴜᴍʜᴀʀᴀ Dɪɴ Sᴜʙʜ Hᴏ {mention}",
-    "🌻 Nᴇᴇᴛʜ Kʜᴀᴛᴀᴍ, Aʙ Kᴀᴀᴍ Sʜᴜʀᴜ {mention}",
-    "💫 Jᴀɢᴏ Mᴇʀᴇ Sʜᴇʀᴏ! {mention}",
-    "🕊️ Sᴜᴋʜ Sᴀʙʜᴀ Gᴏᴏᴅ Mᴏʀɴɪɴɢ {mention}",
-    "🌅 Nᴀʏɪ Sᴜʙᴀʜ, Nᴀʏᴇ Sᴀᴘɴᴇ {mention}",
-    "🌸 Pʜᴜᴀʟᴏɴ Sᴇ Bʜᴀʀᴀ Yᴇʜ Sᴜʙᴀʜ {mention}",
-    "⭐ Uᴛʜᴏ Mᴇʀᴇ Sɪᴛᴀʀᴏ, Dɪɴ Sᴜʜᴀᴠᴀɴᴀ Hᴏ {mention}",
-    "🌺 Kʜᴜsʜɪʏᴏɴ Sᴇ Bʜᴀʀᴀ Hᴏ Yᴇʜ Dɪɴ {mention}",
-    "🦋 Tɪᴛʟɪʏᴏɴ Kɪ Tᴀʀᴀʜ Uᴅᴏ Aᴀᴊ {mention}",
-    "🌈 Rᴀɴɢ Bʜᴀʀᴀ Hᴏ Yᴇʜ Dɪɴ Tᴜᴍʜᴀʀᴀ {mention}",
-    "🎵 Pᴀᴋsʜɪʏᴏɴ Kᴀ Gᴀᴀɴᴀ Sᴜɴᴋᴇ Uᴛʜᴏ {mention}",
-    "🌤️ Dʜᴜᴀɴ Kᴀ Gɪʟᴀᴀs Aᴜʀ Tᴜᴍʜᴀʀɪ Hᴀɴsɪ {mention}",
-    "🌟 Cʜᴀᴀɴᴅ Sɪᴛᴀʀᴇ Bᴏʟᴇ - Gᴏᴏᴅ Mᴏʀɴɪɴɢ {mention}",
-    "💐 Hᴀʀ Kᴀᴀᴍ Mᴇɪɴ Kᴀᴀᴍʏᴀʙɪ Mɪʟᴇ {mention}"
+    "🌞 Gᴏᴏᴅ Mᴏʀɴɪɴɢ 🌼\n\n{mention}",
+    "☕ Rise and Shine!\n\n{mention}",
+    "🌄 Sᴜʀᴀᴊ Nɪᴋʜʀᴀ, Tᴜᴍʜᴀʀᴀ Dɪɴ Sᴜʙʜ Hᴏ\n\n{mention}",
+    "🌻 Nᴇᴇᴛʜ Kʜᴀᴛᴀᴍ, Aʙ Kᴀᴀᴍ Sʜᴜʀᴜ\n\n{mention}",
+    "💫 Jᴀɢᴏ Mᴇʀᴇ Sʜᴇʀᴏ!\n\n{mention}",
+    "🕊️ Sᴜᴋʜ Sᴀʙʜᴀ Gᴏᴏᴅ Mᴏʀɴɪɴɢ\n\n{mention}",
+    "🌅 Nᴀʏɪ Sᴜʙᴀʜ, Nᴀʏᴇ Sᴀᴘɴᴇ\n\n{mention}",
+    "🌸 Pʜᴜᴀʟᴏɴ Sᴇ Bʜᴀʀᴀ Yᴇʜ Sᴜʙᴀʜ\n\n{mention}",
+    "⭐ Uᴛʜᴏ Mᴇʀᴇ Sɪᴛᴀʀᴏ, Dɪɴ Sᴜʜᴀᴠᴀɴᴀ Hᴏ\n\n{mention}",
+    "🌺 Kʜᴜsʜɪʏᴏɴ Sᴇ Bʜᴀʀᴀ Hᴏ Yᴇʜ Dɪɴ\n\n{mention}",
+    "🦋 Tɪᴛʟɪʏᴏɴ Kɪ Tᴀʀᴀʜ Uᴅᴏ Aᴀᴊ\n\n{mention}",
+    "🌈 Rᴀɴɢ Bʜᴀʀᴀ Hᴏ Yᴇʜ Dɪɴ Tᴜᴍʜᴀʀᴀ\n\n{mention}",
+    "🎵 Pᴀᴋsʜɪʏᴏɴ Kᴀ Gᴀᴀɴᴀ Sᴜɴᴋᴇ Uᴛʜᴏ\n\n{mention}",
+    "🌤️ Dʜᴜᴀɴ Kᴀ Gɪʟᴀᴀs Aᴜʀ Tᴜᴍʜᴀʀɪ Hᴀɴsɪ\n\n{mention}",
+    "🌟 Cʜᴀᴀɴᴅ Sɪᴛᴀʀᴇ Bᴏʟᴇ - Gᴏᴏᴅ Mᴏʀɴɪɴɢ\n\n{mention}",
+    "💐 Hᴀʀ Kᴀᴀᴍ Mᴇɪɴ Kᴀᴀᴍʏᴀʙɪ Mɪʟᴇ\n\n{mention}"
 ]
 
 GA_MESSAGES = [
-    "🌞 Gᴏᴏᴅ Aғᴛᴇʀɴᴏᴏɴ ☀️ {mention}",
-    "🍵 Cʜᴀɪ Pɪ Lᴏ, Aғᴛᴇʀɴᴏᴏɴ Hᴏ Gᴀʏɪ {mention}",
-    "🌤️ Hᴀʟᴋɪ Dᴏᴘʜᴀʀ, Aᴜʀ Tᴜᴍʜᴀʀᴀ Nᴀᴀᴍ 💌 {mention}",
-    "😴 Sᴏɴᴀ Mᴀᴛ, Kᴀᴀᴍ Kᴀʀᴏ 😜 {mention}",
-    "📢 Hᴇʏ {mention}, Gᴏᴏᴅ Aғᴛᴇʀɴᴏᴏɴ!",
-    "🌅 Dᴏᴘʜᴀʀ Kᴀ Sᴜʀᴀᴊ Tᴇᴢ Hᴀɪ {mention}",
-    "🥗 Kʜᴀᴀɴᴀ Kʜᴀʏᴀ Kᴇ Nᴀʜɪ {mention}?",
-    "☀️ Tᴇᴢ Dʜᴜᴀᴘ Mᴇɪɴ Tʜᴀɴᴅᴀ Pᴀᴀɴɪ Pɪʏᴏ {mention}",
-    "🌻 Dᴏᴘʜᴀʀ Kᴀ Aʀᴀᴀᴍ Kᴀʀᴏ {mention}",
-    "🍃 Pᴀᴘᴇᴅ Kᴇ Nᴇᴇᴄʜᴇ Bᴀɪᴛʜᴋᴇ Bᴀᴀᴛᴇɪɴ {mention}",
-    "🌸 Lᴜɴᴄʜ Kᴀ Tɪᴍᴇ Hᴏ Gᴀʏᴀ {mention}",
-    "🦋 Dᴏᴘʜᴀʀ Kɪ Mᴀsᴛɪ Kᴀʀᴏ {mention}",
-    "🍉 Tᴀʀʙᴜᴊ Kʜᴀᴀᴋᴇ Tʜᴀɴᴅᴀ Hᴏ Jᴀᴏ {mention}",
-    "🌺 Aᴀsᴍᴀɴ Bʜɪ Sᴀᴀғ Hᴀɪ Aᴀᴊ {mention}",
-    "🎵 Gᴜɴɢᴜɴᴀᴛᴇ Hᴜᴇ Kᴀᴀᴍ Kᴀʀᴏ {mention}",
-    "🌈 Rᴀɴɢ Bɪʀᴀɴɢᴀ Dᴏᴘʜᴀʀ {mention}"
+    "🌞 Gᴏᴏᴅ Aғᴛᴇʀɴᴏᴏɴ ☀️\n\n{mention}",
+    "🍵 Cʜᴀɪ Pɪ Lᴏ, Aғᴛᴇʀɴᴏᴏɴ Hᴏ Gᴀʏɪ\n\n{mention}",
+    "🌤️ Hᴀʟᴋɪ Dᴏᴘʜᴀʀ, Aᴜʀ Tᴜᴍʜᴀʀᴀ Nᴀᴀᴍ 💌\n\n{mention}",
+    "😴 Sᴏɴᴀ Mᴀᴛ, Kᴀᴀᴍ Kᴀʀᴏ 😜\n\n{mention}",
+    "📢 Hᴇʏ Gᴏᴏᴅ Aғᴛᴇʀɴᴏᴏɴ!\n\n{mention}",
+    "🌅 Dᴏᴘʜᴀʀ Kᴀ Sᴜʀᴀᴊ Tᴇᴢ Hᴀɪ\n\n{mention}",
+    "🥗 Kʜᴀᴀɴᴀ Kʜᴀʏᴀ Kᴇ Nᴀʜɪ?\n\n{mention}",
+    "☀️ Tᴇᴢ Dʜᴜᴀᴘ Mᴇɪɴ Tʜᴀɴᴅᴀ Pᴀᴀɴɪ Pɪʏᴏ\n\n{mention}",
+    "🌻 Dᴏᴘʜᴀʀ Kᴀ Aʀᴀᴀᴍ Kᴀʀᴏ\n\n{mention}",
+    "🍃 Pᴀᴘᴇᴅ Kᴇ Nᴇᴇᴄʜᴇ Bᴀɪᴛʜᴋᴇ Bᴀᴀᴛᴇɪɴ\n\n{mention}",
+    "🌸 Lᴜɴᴄʜ Kᴀ Tɪᴍᴇ Hᴏ Gᴀʏᴀ\n\n{mention}",
+    "🦋 Dᴏᴘʜᴀʀ Kɪ Mᴀsᴛɪ Kᴀʀᴏ\n\n{mention}",
+    "🍉 Tᴀʀʙᴜᴊ Kʜᴀᴀᴋᴇ Tʜᴀɴᴅᴀ Hᴏ Jᴀᴏ\n\n{mention}",
+    "🌺 Aᴀsᴍᴀɴ Bʜɪ Sᴀᴀғ Hᴀɪ Aᴀᴊ\n\n{mention}",
+    "🎵 Gᴜɴɢᴜɴᴀᴛᴇ Hᴜᴇ Kᴀᴀᴍ Kᴀʀᴏ\n\n{mention}",
+    "🌈 Rᴀɴɢ Bɪʀᴀɴɢᴀ Dᴏᴘʜᴀʀ\n\n{mention}"
 ]
 
 GN_MESSAGES = [
-    "🌙 Gᴏᴏᴅ Nɪɢʜᴛ {mention}",
-    "💤 Sᴏɴᴇ Cʜᴀʟᴏ, Kʜᴀᴡᴀʙᴏɴ Mᴇɪɴ Mɪʟᴛᴇ Hᴀɪɴ 😴 {mention}",
-    "🌌 Aᴀsᴍᴀɴ Bʜɪ Sᴏ Gᴀʏᴀ {mention}, Aʙ Tᴜᴍʜɪ Bʜɪ Sᴏ Jᴀᴏ!",
-    "✨ Rᴀᴀᴛ Kᴀ Sᴀᴋᴏᴏɴ Tᴜᴍʜᴇɪ Mɪʟᴇ {mention}",
-    "🌃 Gᴏᴏᴅ Nɪɢʜᴛ & Sᴡᴇᴇᴛ Dʀᴇᴀᴍs {mention}",
-    "🌟 Sɪᴛᴀʀᴏɴ Kᴇ Sᴀᴀᴛʜ Sᴏɴᴀ {mention}",
-    "🕊️ Cᴀᴀɴᴅ Kɪ Rᴏsʜɴɪ Mᴇɪɴ Aᴀʀᴀᴀᴍ {mention}",
-    "🎭 Sᴀᴘɴᴏɴ Kᴀ Rᴀᴀᴊᴀ Bᴀɴᴋᴇ Sᴏɴᴀ {mention}",
-    "🌺 Rᴀᴀᴛ Kᴇ Pʜᴜᴀʟᴏɴ Sᴇ Mɪʟᴏ {mention}",
-    "💫 Cʜᴀᴀɴᴅ Mᴀᴀᴍᴀ Kʜᴀᴀɴɪ Sᴜɴᴀᴛᴇ Hᴀɪɴ {mention}",
-    "🎵 Lᴏʀɪ Kᴇ Sᴀᴀᴛʜ Sᴏɴᴀ {mention}",
-    "🌸 Sᴀᴀʀᴇ Gᴀᴍ Bʜᴜᴀʟᴀᴋᴇ Sᴏɴᴀ {mention}",
-    "🦋 Tɪᴛʟɪʏᴏɴ Kᴇ Sᴀᴀᴛʜ Sᴀᴘɴᴇ {mention}",
-    "🌈 Rᴀɴɢ Bɪʀᴀɴɢᴇ Kʜᴀᴀʙ Dᴇᴋʜɴᴀ {mention}",
-    "🕯️ Dɪʏᴇ Kɪ Rᴏsʜɴɪ Mᴇɪɴ Sᴏɴᴀ {mention}",
-    "🌅 Kᴀʟ Pʜɪʀ Mɪʟᴇɴɢᴇ Sᴜʙᴀʜ {mention}"
+    "🌙 Gᴏᴏᴅ Nɪɢʜᴛ\n\n{mention}",
+    "💤 Sᴏɴᴇ Cʜᴀʟᴏ, Kʜᴀᴡᴀʙᴏɴ Mᴇɪɴ Mɪʟᴛᴇ Hᴀɪɴ 😴\n\n{mention}",
+    "🌌 Aᴀsᴍᴀɴ Bʜɪ Sᴏ Gᴀʏᴀ, Aʙ Tᴜᴍʜɪ Bʜɪ Sᴏ Jᴀᴏ!\n\n{mention}",
+    "✨ Rᴀᴀᴛ Kᴀ Sᴀᴋᴏᴏɴ Tᴜᴍʜᴇɪ Mɪʟᴇ\n\n{mention}",
+    "🌃 Gᴏᴏᴅ Nɪɢʜᴛ & Sᴡᴇᴇᴛ Dʀᴇᴀᴍs\n\n{mention}",
+    "🌟 Sɪᴛᴀʀᴏɴ Kᴇ Sᴀᴀᴛʜ Sᴏɴᴀ\n\n{mention}",
+    "🕊️ Cᴀᴀɴᴅ Kɪ Rᴏsʜɴɪ Mᴇɪɴ Aᴀʀᴀᴀᴍ\n\n{mention}",
+    "🎭 Sᴀᴘɴᴏɴ Kᴀ Rᴀᴀᴊᴀ Bᴀɴᴋᴇ Sᴏɴᴀ\n\n{mention}",
+    "🌺 Rᴀᴀᴛ Kᴇ Pʜᴜᴀʟᴏɴ Sᴇ Mɪʟᴏ\n\n{mention}",
+    "💫 Cʜᴀᴀɴᴅ Mᴀᴀᴍᴀ Kʜᴀᴀɴɪ Sᴜɴᴀᴛᴇ Hᴀɪɴ\n\n{mention}",
+    "🎵 Lᴏʀɪ Kᴇ Sᴀᴀᴛʜ Sᴏɴᴀ\n\n{mention}",
+    "🌸 Sᴀᴀʀᴇ Gᴀᴍ Bʜᴜᴀʟᴀᴋᴇ Sᴏɴᴀ\n\n{mention}",
+    "🦋 Tɪᴛʟɪʏᴏɴ Kᴇ Sᴀᴀᴛʜ Sᴀᴘɴᴇ\n\n{mention}",
+    "🌈 Rᴀɴɢ Bɪʀᴀɴɢᴇ Kʜᴀᴀʙ Dᴇᴋʜɴᴀ\n\n{mention}",
+    "🕯️ Dɪʏᴇ Kɪ Rᴏsʜɴɪ Mᴇɪɴ Sᴏɴᴀ\n\n{mention}",
+    "🌅 Kᴀʟ Pʜɪʀ Mɪʟᴇɴɢᴇ Sᴜʙᴀʜ\n\n{mention}"
 ]
 
 # Helper function to get all non-bot, non-deleted users from a chat
@@ -89,7 +89,7 @@ async def tag_users(chat_id, messages, tag_type):
         mentions = " ".join([f"[{u.first_name}](tg://user?id={u.id})" for u in batch])
         msg = random.choice(messages).format(mention=mentions)
         
-        await app.send_message(chat_id, msg, disable_web_page_preview=True)
+        await app.send_message(chat_id, msg, disable_web_page_preview=True, parse_mode=None)
         await asyncio.sleep(2)
     
     # Clean up and send completion message
