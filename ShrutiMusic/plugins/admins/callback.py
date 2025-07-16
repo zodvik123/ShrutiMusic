@@ -76,6 +76,65 @@ async def show_help_page1(client, callback_query: CallbackQuery):
     )
 
 
+from pyrogram import filters
+from pyrogram.types import CallbackQuery
+from ShrutiMusic import app
+import time, psutil
+
+def get_readable_time(seconds: int) -> str:
+    count = 0
+    ping_time = ""
+    time_list = []
+    time_suffix_list = ["s", "m", "h", "d"]
+
+    while count < 4:
+        count += 1
+        remainder, result = divmod(seconds, 60) if count < 3 else divmod(seconds, 24)
+        if seconds == 0 and result == 0:
+            break
+        time_list.append(int(result))
+        seconds = int(remainder)
+
+    for x in range(len(time_list)):
+        ping_time = str(time_list[x]) + time_suffix_list[x] + " " + ping_time
+    return ping_time.strip()
+
+@app.on_callback_query(filters.regex("ping_status"))
+async def ping_status_callback(client, callback_query: CallbackQuery):
+    start = time.time()
+    end = time.time()
+    ping = round((end - start) * 1000)
+    uptime = get_readable_time(time.time() - app.start_time)
+
+    # System Stats
+    disk = psutil.disk_usage('/')
+    mem = psutil.virtual_memory()
+    cpu = psutil.cpu_percent()
+
+    # Ping Status Color
+    if ping < 100:
+        color = "🟢"
+    elif ping < 300:
+        color = "🟡"
+    else:
+        color = "🔴"
+
+    # Popup message (Max 200 chars)
+    popup_msg = (
+        f"📡 ᴘɪɴɢ: {ping}ms {color}\n"
+        f"⏱ ᴜᴘᴛɪᴍᴇ: {uptime}\n"
+        f"💾 ᴅɪꜱᴋ: {disk.percent}%\n"
+        f"📈 ᴍᴇᴍᴏʀʏ: {mem.percent}%\n"
+        f"🖥 ᴄᴘᴜ: {cpu}%"
+    )
+
+    await callback_query.answer(
+        text=popup_msg,
+        show_alert=True
+    )
+
+
+
 @app.on_callback_query(filters.regex("help_page_2"))
 async def show_help_page2(client, callback_query: CallbackQuery):
     try:
