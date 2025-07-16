@@ -43,6 +43,16 @@ def private_panel(_):
     buttons = [
         [
             InlineKeyboardButton(
+                text=_["S_B_5"],
+                url=f"https://t.me/{config.OWNER_USERNAME}"
+            ),
+            InlineKeyboardButton(
+                text=_["S_B_10"],
+                callback_data="ping_status"
+            )
+        ],
+        [
+            InlineKeyboardButton(
                 text=_["S_B_3"],
                 url=f"https://t.me/{app.username}?startgroup=true",
             )
