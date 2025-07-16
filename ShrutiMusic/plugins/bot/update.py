@@ -1,66 +1,47 @@
+import subprocess
 from pyrogram import Client, filters
 from pyrogram.types import Message
-import subprocess
 import os
-from ShrutiMusic import app
 
-# Token aur Repo store karne ke liye temp dict
-user_sessions = {}
+@Client.on_message(filters.command("gitupdate") & filters.private)
+async def git_update_force(client, message: Message):
+    await message.reply_text("🔐 Please send your **GitHub Personal Access Token (Classic)**:")
 
-# Step 1: Start command
-@app.on_message(filters.command("gitupdate") & filters.private)
-async def git_update_command(client: Client, message: Message):
-    await message.reply_text("🔐 <b>Please send your <u>GitHub Classic Token</u></b>.\n\n<i>(Don't worry, it's temporary and won't be saved.)</i>")
-    user_sessions[message.from_user.id] = {"step": "awaiting_token"}
+    # Wait for token from user
+    token_msg = await client.listen(message.chat.id)
+    token = token_msg.text.strip()
 
-@app.on_message(filters.private & filters.text)
-async def handle_updates(client: Client, message: Message):
-    user_id = message.from_user.id
+    await message.reply_text("📦 Now send your **GitHub Repo URL** (e.g., https://github.com/username/repo):")
+    repo_msg = await client.listen(message.chat.id)
+    repo_url = repo_msg.text.strip()
 
-    if user_id not in user_sessions:
+    # Extract repo slug
+    try:
+        repo_slug = repo_url.split("github.com/")[1]
+    except IndexError:
+        await message.reply_text("❌ Invalid repo URL.")
         return
 
-    step = user_sessions[user_id].get("step")
+    await message.reply_text("🔄 Syncing your repo with upstream... Please wait.")
 
-    if step == "awaiting_token":
-        user_sessions[user_id]["token"] = message.text.strip()
-        user_sessions[user_id]["step"] = "awaiting_repo"
-        await message.reply_text("📁 <b>Now send your <u>forked repo URL</u> (e.g. https://github.com/NoxxOP/ShrutiMusic)</b>")
+    try:
+        # Remove current .git if exists (clean start)
+        if os.path.exists(".git"):
+            subprocess.run(["rm", "-rf", ".git"], check=True)
 
-    # Step: Repo received
-    elif step == "awaiting_repo":
-        token = user_sessions[user_id]["token"]
-        repo_url = message.text.strip()
+        # Re-init git and set your repo as origin
+        subprocess.run(["git", "init"], check=True)
+        subprocess.run(["git", "remote", "add", "origin", f"https://{token}@github.com/{repo_slug}.git"], check=True)
+        subprocess.run(["git", "remote", "add", "upstream", "https://github.com/NoxxOP/ShrutiMusic.git"], check=True)
 
-        if "github.com" not in repo_url:
-            await message.reply_text("❌ Invalid URL. Please send a valid GitHub repo URL.")
-            return
+        # Fetch and force reset to upstream
+        subprocess.run(["git", "fetch", "upstream"], check=True)
+        subprocess.run(["git", "reset", "--hard", "upstream/main"], check=True)
 
-        try:
-            username, reponame = repo_url.split("github.com/")[1].split("/", 1)
-            reponame = reponame.strip("/")
-        except:
-            await message.reply_text("❌ Couldn't parse the repo URL.")
-            return
+        # Force push to user's repo
+        subprocess.run(["git", "push", "origin", "main", "--force"], check=True)
 
-        await message.reply_text("🔄 Starting update... please wait...")
+        await message.reply_text("✅ Your repo has been fully synced with the main repo.\n\n🔗 Now it's identical to: https://github.com/NoxxOP/ShrutiMusic")
 
-        # Git clone
-        try:
-            subprocess.run(["rm", "-rf", "temp_git"], check=True)
-            subprocess.run(["git", "clone", f"https://{token}@github.com/{username}/{reponame}.git", "temp_git"], check=True)
-
-            os.chdir("temp_git")
-            subprocess.run(["git", "remote", "add", "upstream", "https://github.com/NoxxOP/ShrutiMusic.git"], check=True)
-            subprocess.run(["git", "fetch", "upstream"], check=True)
-            subprocess.run(["git", "merge", "upstream/main", "-m", "Sync with original repo"], check=True)
-            subprocess.run(["git", "push", "origin", "main"], check=True)
-            os.chdir("..")
-            subprocess.run(["rm", "-rf", "temp_git"], check=True)
-
-            await message.reply_text("✅ <b>Your repo has been updated with the main repo.</b>\n\nCheck: https://github.com/" + username + "/" + reponame)
-        except subprocess.CalledProcessError as e:
-            await message.reply_text(f"❌ Error occurred during update:\n<code>{e}</code>")
-
-        # Clear session
-        user_sessions.pop(user_id, None)
+    except subprocess.CalledProcessError as e:
+        await message.reply_text(f"❌ Error during update:\n<code>{str(e)}</code>")
