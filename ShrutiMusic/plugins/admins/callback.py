@@ -76,16 +76,25 @@ async def show_help_page1(client, callback_query: CallbackQuery):
     )
 
 # Callback handler for about page - only changes buttons, keeps same message
-@app.on_callback_query(filters.regex("about_page"))
-async def about_callback(client, CallbackQuery):
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardMarkup
+
+from ShrutiMusic.utils.inline.start import about_panel
+from strings import get_string
+from config import BANNED_USERS
+
+@app.on_callback_query(filters.regex("about_page") & ~BANNED_USERS)
+async def about_cb(client, callback_query):
     try:
-        await CallbackQuery.answer()
-        await CallbackQuery.edit_message_reply_markup(
+        lang = "en"
+        _ = get_string(lang)
+
+        await callback_query.answer()
+        await callback_query.edit_message_reply_markup(
             reply_markup=InlineKeyboardMarkup(about_panel(_))
         )
     except Exception as e:
-        await CallbackQuery.answer(f"Error: {str(e)}", show_alert=True)
-
+        await callback_query.answer(f"❌ Error: {e}", show_alert=True)
 
 
 
