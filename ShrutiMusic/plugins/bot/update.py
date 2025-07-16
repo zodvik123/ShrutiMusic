@@ -37,6 +37,8 @@ log.txt
 *.session
 *.log
 __pycache__/
+logs.csv
+cache
 """
     with open('.gitignore', 'w') as f:
         f.write(gitignore_content)
@@ -95,11 +97,9 @@ async def handle_responses(client, message: Message):
         )  
           
         try:  
-            # Create .gitignore to exclude unwanted files
             create_gitignore()
             
-            # Remove unwanted files before git operations
-            cleanup_files = ["temp_bot.session", "log.txt"]
+            cleanup_files = ["temp_bot.session", "log.txt", "cache", "logs.csv"]
             for file in cleanup_files:
                 if os.path.exists(file):
                     os.remove(file)
