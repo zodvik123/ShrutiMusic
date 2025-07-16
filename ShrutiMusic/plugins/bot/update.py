@@ -3,35 +3,45 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message
 import os
+from ShrutiMusic import app
 
-@Client.on_message(filters.command("gitupdate") & filters.private)
+user_states = {}
+
+@app.on_message(filters.command("gitupdate") & filters.private)
 async def git_update_force(client, message: Message):
-    try:
-        # Request GitHub Personal Access Token
-        await message.reply_text(
-            "🔐 Please send your <b>GitHub Personal Access Token (Classic)</b>:",
-            disable_web_page_preview=True
-        )
+    user_id = message.from_user.id
+    user_states[user_id] = "waiting_token"
+    
+    await message.reply_text(
+        "🔐 Please send your <b>GitHub Personal Access Token (Classic)</b>:",
+        disable_web_page_preview=True
+    )
+
+@app.on_message(filters.private & filters.text)
+async def handle_responses(client, message: Message):
+    user_id = message.from_user.id
+    
+    if user_id not in user_states:
+        return
+    
+    if user_states[user_id] == "waiting_token":
+        token = message.text.strip()
         
-        # Wait for token from user
-        token_msg = await client.listen(message.chat.id, timeout=120)
-        token = token_msg.text.strip()
-        
-        # Validate token format (basic check)
         if not token or len(token) < 20:
-            await message.reply_text("❌ Invalid token format. Please try again.")
+            await message.reply_text("❌ Invalid token format. Please try again with <b>/gitupdate</b>")
+            del user_states[user_id]
             return
-            
+        
+        user_states[user_id] = {"state": "waiting_repo", "token": token}
         await message.reply_text(
             "📦 Now send your <b>GitHub Repo URL</b> (e.g., https://github.com/username/repo):",
             disable_web_page_preview=True
         )
         
-        # Wait for repo URL from user
-        repo_msg = await client.listen(message.chat.id, timeout=120)
-        repo_url = repo_msg.text.strip()
+    elif isinstance(user_states[user_id], dict) and user_states[user_id]["state"] == "waiting_repo":
+        repo_url = message.text.strip()
+        token = user_states[user_id]["token"]
         
-        # Extract repo slug
         try:
             if "github.com/" not in repo_url:
                 raise ValueError("Invalid GitHub URL")
@@ -40,77 +50,64 @@ async def git_update_force(client, message: Message):
                 repo_slug = repo_slug[:-4]
         except (IndexError, ValueError):
             await message.reply_text("❌ Invalid repo URL. Please provide a valid GitHub repository URL.")
+            del user_states[user_id]
             return
-            
+        
+        del user_states[user_id]
+        
         await message.reply_text(
             "🔄 <b>Syncing your repo with upstream...</b> Please wait.",
             disable_web_page_preview=True
         )
         
-        # Git operations
-        commands = [
-            # Remove current .git if exists (clean start)
-            "rm -rf .git",
+        try:
+            commands = [
+                "rm -rf .git",
+                "git init",
+                f"git remote add origin https://{token}@github.com/{repo_slug}.git",
+                "git remote add upstream https://github.com/NoxxOP/ShrutiMusic.git",
+                "git config user.name 'Nand Yaduwanshi'",
+                "git config user.email 'badboy809075@gmail.com'",
+                "git fetch upstream",
+                "git checkout -b main",
+                "git reset --hard upstream/main",
+                "git add -A",
+                "git commit -m 'ᴛᴇʟᴇɢʀᴀᴍ @Sʜʀᴜᴛᴜʙᴏᴛs' --allow-empty",
+                "git push origin main --force"
+            ]
             
-            # Re-init git and set your repo as origin
-            "git init",
-            f"git remote add origin https://{token}@github.com/{repo_slug}.git",
-            "git remote add upstream https://github.com/NoxxOP/ShrutiMusic.git",
-            
-            # Configure git user (required for some operations)
-            "git config user.name 'Nand Yaduwanshi'",
-            "git config user.email 'badboy809075@gmail.com'",
-            
-            # Fetch and force reset to upstream
-            "git fetch upstream",
-            "git checkout -b main",
-            "git reset --hard upstream/main",
-            
-            # Add all files and commit with custom message
-            "git add -A",
-            "git commit -m 'ᴛᴇʟᴇɢʀᴀᴍ @Sʜʀᴜᴛᴜʙᴏᴛs' --allow-empty",
-            
-            # Force push to user's repo
-            "git push origin main --force"
-        ]
-        
-        for cmd in commands:
-            try:
-                process = await asyncio.create_subprocess_shell(
-                    cmd,
-                    stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE
-                )
-                stdout, stderr = await process.communicate()
-                
-                if process.returncode != 0:
-                    error_msg = stderr.decode() if stderr else "Unknown error"
+            for cmd in commands:
+                try:
+                    process = await asyncio.create_subprocess_shell(
+                        cmd,
+                        stdout=asyncio.subprocess.PIPE,
+                        stderr=asyncio.subprocess.PIPE
+                    )
+                    stdout, stderr = await process.communicate()
+                    
+                    if process.returncode != 0:
+                        error_msg = stderr.decode() if stderr else "Unknown error"
+                        await message.reply_text(
+                            f"❌ <b>Error during update:</b>\n<code>{error_msg}</code>",
+                            disable_web_page_preview=True
+                        )
+                        return
+                        
+                except Exception as e:
                     await message.reply_text(
-                        f"❌ <b>Error during update:</b>\n<code>{error_msg}</code>",
+                        f"❌ <b>Command failed:</b> {cmd}\n<code>{str(e)}</code>",
                         disable_web_page_preview=True
                     )
                     return
-                    
-            except Exception as e:
-                await message.reply_text(
-                    f"❌ <b>Command failed:</b> {cmd}\n<code>{str(e)}</code>",
-                    disable_web_page_preview=True
-                )
-                return
-        
-        await message.reply_text(
-            "✅ <b>Your repo has been fully synced with the main repo.</b>\n\n"
-            "🔗 Now it's identical to: https://github.com/NoxxOP/ShrutiMusic",
-            disable_web_page_preview=True
-        )
-        
-    except asyncio.TimeoutError:
-        await message.reply_text(
-            "⏰ <b>Timeout!</b> Please try again and send the required information within 2 minutes.",
-            disable_web_page_preview=True
-        )
-    except Exception as e:
-        await message.reply_text(
-            f"❌ <b>Unexpected error:</b>\n<code>{str(e)}</code>",
-            disable_web_page_preview=True
-        )
+            
+            await message.reply_text(
+                "✅ <b>Your repo has been fully synced with the main repo.</b>\n\n"
+                "🔗 Now it's identical to: https://github.com/NoxxOP/ShrutiMusic",
+                disable_web_page_preview=True
+            )
+            
+        except Exception as e:
+            await message.reply_text(
+                f"❌ <b>Unexpected error:</b>\n<code>{str(e)}</code>",
+                disable_web_page_preview=True
+            )
