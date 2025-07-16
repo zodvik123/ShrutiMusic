@@ -104,19 +104,19 @@ def get_readable_time(seconds: int) -> str:
 @app.on_callback_query(filters.regex("ping_status"))
 async def ping_status_callback(client, callback_query: CallbackQuery):
     start = time.time()
-    end = time.time()
-    ping = round((end - start) * 1000)
     
     try:
         pytgping = await Aviax.ping()
         UP, CPU, RAM, DISK = await bot_sys_stats()
     except Exception:
-        
         UP = "Unknown"
         CPU = psutil.cpu_percent()
         RAM = psutil.virtual_memory().percent
         DISK = psutil.disk_usage('/').percent
-        
+    
+    end = time.time()
+    ping = round((end - start) * 1000)
+
     if ping < 100:
         color = "🟢"
     elif ping < 300:
@@ -136,7 +136,6 @@ async def ping_status_callback(client, callback_query: CallbackQuery):
         text=popup_msg,
         show_alert=True
     )
-
 
 
 @app.on_callback_query(filters.regex("help_page_2"))
