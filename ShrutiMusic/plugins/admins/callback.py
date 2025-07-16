@@ -75,6 +75,19 @@ async def show_help_page1(client, callback_query: CallbackQuery):
         reply_markup=help_pannel_page1(_, START=True)
     )
 
+# Callback handler for about page - only changes buttons, keeps same message
+@app.on_callback_query(filters.regex("about_page"))
+async def about_callback(client, CallbackQuery):
+    try:
+        await CallbackQuery.answer()
+        await CallbackQuery.edit_message_reply_markup(
+            reply_markup=InlineKeyboardMarkup(about_panel(_))
+        )
+    except Exception as e:
+        await CallbackQuery.answer(f"Error: {str(e)}", show_alert=True)
+
+
+
 
 from pyrogram import filters
 from pyrogram.types import CallbackQuery
