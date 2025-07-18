@@ -103,7 +103,7 @@ from pyrogram.types import CallbackQuery
 from ShrutiMusic import app
 from ShrutiMusic.core.call import Aviax
 from ShrutiMusic.utils import bot_sys_stats
-import time, psutil
+import time, psutil, asyncio
 
 def get_readable_time(seconds: int) -> str:
     count = 0
@@ -125,20 +125,26 @@ def get_readable_time(seconds: int) -> str:
 
 @app.on_callback_query(filters.regex("ping_status"))
 async def ping_status_callback(client, callback_query: CallbackQuery):
-    start = time.time()
     
+    loading = await callback_query.message.reply_text("🔄 ᴘɪɴɢɪɴɢ...")
+
+    start = time.time()
     try:
-        pytgping = await Aviax.ping()
+        await Aviax.ping()
+    except:
+        pass
+    end = time.time()
+    ping = round((end - start) * 1000)
+
+    try:
         UP, CPU, RAM, DISK = await bot_sys_stats()
     except Exception:
         UP = "Unknown"
         CPU = psutil.cpu_percent()
         RAM = psutil.virtual_memory().percent
         DISK = psutil.disk_usage('/').percent
-    
-    end = time.time()
-    ping = round((end - start) * 1000)
 
+    # Step 4: Select Ping Color
     if ping < 100:
         color = "🟢"
     elif ping < 300:
@@ -146,7 +152,7 @@ async def ping_status_callback(client, callback_query: CallbackQuery):
     else:
         color = "🔴"
 
-    popup_msg = (
+    final_text = (
         f"📡 ᴘɪɴɢ: {ping}ms {color}\n"
         f"⏱ ᴜᴘᴛɪᴍᴇ: {UP}\n"
         f"💾 ᴅɪꜱᴋ: {DISK}%\n"
@@ -154,10 +160,10 @@ async def ping_status_callback(client, callback_query: CallbackQuery):
         f"🖥 ᴄᴘᴜ: {CPU}%"
     )
 
-    await callback_query.answer(
-        text=popup_msg,
-        show_alert=True
-    )
+    await loading.edit_text(final_text)
+    
+    await asyncio.sleep(8)
+    await loading.delete()
 
 
 @app.on_callback_query(filters.regex("help_page_2"))
