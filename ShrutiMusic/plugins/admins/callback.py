@@ -108,7 +108,7 @@ async def about_cb(client, callback_query):
     except Exception as e:
         await callback_query.answer(f"❌ Error: {e}", show_alert=True)
 
-@app.on_callback_query(filters.regex("owner_panel") & ~BANNED_USERS)
+@app.on_callback_query(filters.regex("owner_page") & ~BANNED_USERS)
 async def about_cb(client, callback_query):
     try:
         lang = "en"
