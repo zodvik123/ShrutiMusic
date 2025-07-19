@@ -109,9 +109,17 @@ async def about_cb(client, callback_query):
         await callback_query.answer(f"❌ Error: {e}", show_alert=True)
 
 
-@app.on_callback_query(filters.regex("owner_panel") & ~BANNED_USERS)
+from pyrogram import filters
+from pyrogram.types import InlineKeyboardMarkup
+from ShrutiMusic import app, BANNED_USERS
+from ShrutiMusic.utils.inline import owner_panel
+from ShrutiMusic.utils.language import get_string  # Agar aapka translation system yahi hai
+
+@app.on_callback_query(filters.callback_data("owner_panel") & ~BANNED_USERS)
 async def owner_cb(client, callback_query):
     try:
+        print("✅ Owner panel callback triggered.")  # Debug log
+        
         lang = "en"
         _ = get_string(lang)
 
@@ -132,8 +140,8 @@ async def owner_cb(client, callback_query):
 
     except Exception as e:
         await callback_query.answer(f"❌ Error: {e}", show_alert=True)
-
-
+        print(f"❌ Callback error: {e}")
+        
 
 from pyrogram import filters
 from pyrogram.types import CallbackQuery
