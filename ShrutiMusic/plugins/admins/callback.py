@@ -75,6 +75,19 @@ async def show_help_page1(client, callback_query: CallbackQuery):
         reply_markup=help_pannel_page1(_, START=True)
     )
 
+@app.on_callback_query(filters.regex("fork_repo"))
+async def fork_repo_callback(client, query):
+    await query.message.edit_text(
+        text="🔗 Fork the repo here:\nhttps://github.com/NoxxOP/ShrutiMusic/fork",
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("◀️ Back", callback_data="settings_back_helper")]
+            ]
+        )
+    )
+
+
 # Callback handler for about page - only changes buttons, keeps same message
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup
