@@ -111,9 +111,10 @@ async def about_cb(client, callback_query):
 
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup
-from ShrutiMusic import app, BANNED_USERS
+from ShrutiMusic import app
+from config import BANNED_USERS
 from ShrutiMusic.utils.inline import owner_panel
-from ShrutiMusic.utils.language import get_string  # Agar aapka translation system yahi hai
+from strings import get_string
 
 @app.on_callback_query(filters.callback_data("owner_panel") & ~BANNED_USERS)
 async def owner_cb(client, callback_query):
