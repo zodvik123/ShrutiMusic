@@ -52,8 +52,8 @@ def private_panel(_):
                 callback_data="about_page"
             ),
             InlineKeyboardButton(
-                text=_["S_B_10"],
-                callback_data="ping_status"
+                text=_["S_B_12"],
+                callback_data="owner_panel"
             )
         ],
         [
