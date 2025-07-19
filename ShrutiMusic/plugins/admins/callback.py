@@ -82,7 +82,7 @@ async def fork_repo_callback(client, query):
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("◀️ Back", callback_data="settings_back_helper")]
+                [InlineKeyboardButton("◀️ Back", callback_data="settingsback_helper")]
             ]
         )
     )
