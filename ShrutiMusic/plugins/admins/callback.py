@@ -108,41 +108,21 @@ async def about_cb(client, callback_query):
     except Exception as e:
         await callback_query.answer(f"❌ Error: {e}", show_alert=True)
 
-
-from pyrogram import filters
-from pyrogram.types import InlineKeyboardMarkup
-from ShrutiMusic import app
-from config import BANNED_USERS
-from ShrutiMusic.utils.inline import owner_panel
-from strings import get_string
-
-@app.on_callback_query(filters.callback_data("owner_panel") & ~BANNED_USERS)
-async def owner_cb(client, callback_query):
+@app.on_callback_query(filters.regex("owner_panel") & ~BANNED_USERS)
+async def about_cb(client, callback_query):
     try:
-        print("✅ Owner panel callback triggered.")  # Debug log
-        
         lang = "en"
         _ = get_string(lang)
 
         await callback_query.answer()
-        
-        caption = (
-            "<b>👑 ᴏᴡɴᴇʀ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ</b>\n\n"
-            "ᴛʜɪs ʙᴏᴛ ɪꜱ ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴀ ᴅᴇᴠᴇʟᴏᴘᴇʀ ᴡʜᴏ ʙᴇʟɪᴇᴠᴇꜱ ɪɴ ʀᴇᴀʟ ɪᴍᴘᴀᴄᴛ & ɪɴɴᴏᴠᴀᴛɪᴏɴ.\n"
-            "ꜱᴛᴀʏ ᴄᴏɴɴᴇᴄᴛᴇᴅ, ꜱᴜᴘᴘᴏʀᴛ ᴛʜᴇ ᴊᴏᴜʀɴᴇʏ, ᴏʀ ᴄᴏʟʟᴀʙᴏʀᴀᴛᴇ ᴛʜʀᴏᴜɢʜ ᴛʜᴇ ʟɪɴᴋꜱ ʙᴇʟᴏᴡ.\n\n"
-            "<b>📍 ɪɴꜱᴛᴀɢʀᴀᴍ | ʏᴏᴜᴛᴜʙᴇ | ɢɪᴛʜᴜʙ | ᴅᴏɴᴀᴛᴇ</b>\n"
-            "ᴇᴠᴇʀʏ ꜱᴍᴀʟʟ ꜱᴜᴘᴘᴏʀᴛ ʜᴇʟᴘꜱ ᴜꜱ ɢʀᴏᴡ ✨"
-        )
-
-        await callback_query.edit_message_text(
-            text=caption,
+        await callback_query.edit_message_reply_markup(
             reply_markup=InlineKeyboardMarkup(owner_panel(_))
         )
-
     except Exception as e:
         await callback_query.answer(f"❌ Error: {e}", show_alert=True)
-        print(f"❌ Callback error: {e}")
         
+
+
 
 from pyrogram import filters
 from pyrogram.types import CallbackQuery
