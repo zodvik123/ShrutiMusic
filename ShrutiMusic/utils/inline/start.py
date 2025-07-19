@@ -42,6 +42,12 @@ def private_panel(_):
     buttons = [
         [
             InlineKeyboardButton(
+                text=_["S_B_3"],
+                url=f"https://t.me/{app.username}?startgroup=true",
+            )
+        ],
+        [
+            InlineKeyboardButton(
                 text=_["S_B_11"],
                 callback_data="about_page"
             ),
@@ -52,12 +58,9 @@ def private_panel(_):
         ],
         [
             InlineKeyboardButton(
-                text=_["S_B_3"],
-                url=f"https://t.me/{app.username}?startgroup=true",
-            )
-        ],
-        [
-            InlineKeyboardButton(text=_["E_X_1"], url=config.UPSTREAM_REPO),
+                text=_["E_X_1"],
+                callback_data="fork_repo"
+            ),
             InlineKeyboardButton(
                 text=_["S_B_5"],
                 url=f"https://t.me/{config.OWNER_USERNAME}"
