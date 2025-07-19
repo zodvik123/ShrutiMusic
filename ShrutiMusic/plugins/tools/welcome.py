@@ -141,7 +141,7 @@ async def greet_group(_, member: ChatMemberUpdated):
 
 ✨ <b>ғᴇᴇʟ ғʀᴇᴇ ᴛᴏ sʜᴀʀᴇ ᴀɴᴅ ᴇɴᴊᴏʏ!</b> ✨
 
-<blockquote><b>💝 ᴘᴏᴡᴇʀᴇᴅ ʙʏ ➤ <a href="https://t.me/ShrutixMusic?start=help">Sʜʀᴜᴛɪ Mᴜsɪᴄ 🎶💖</a></b></blockquote>
+<blockquote><b>💝 ᴘᴏᴡᴇʀᴇᴅ ʙʏ ➤ <a href="https://t.me/{app.username}?start=help">Mᴜsɪᴄ ʙᴏᴛs🎶💖</a></b></blockquote>
 
 🌸✨ ──────────────────── ✨🌸
 """,
