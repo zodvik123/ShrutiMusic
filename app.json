@@ -1,7 +1,7 @@
 {
   "name": "Shruti Music",
   "description": "A Telegram Music Player Bot, written in Python with Pyrogram and Py-Tgcalls.",
-  "logo": "https://files.catbox.moe/q65bhr.jpg",
+  "logo": "https://files.catbox.moe/v7hio8.jpg",
   "keywords": [
     "python3",
     "telegram",
@@ -106,7 +106,7 @@
       "description": "Link where people can support/donate",
       "value": "https://t.me/ShrutiBots/91",
       "required": false
-    }
+    },
     "COOKIE_URL": {
       "description": "An additional API key for your bot (if needed)",
       "value": "Need , IF You Didn't add Cookies file in cookies folder",
